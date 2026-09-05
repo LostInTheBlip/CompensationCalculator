@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Offer Calc" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#0B1116" />
+<title>DoorDash vs. Square — Offer, Equity & Career Decision Model</title>
+<meta name="description" content="Model the lost value of unvested equity, break-even timeline, quota-performance risk, a DoorDash-vs-Square/Block company comparison, SWOT analysis, and a weighted career-growth & quality-of-life scorecard when comparing a current package to a new job offer." />
+
+<!-- Fontshare: General Sans (display) + Satoshi (body) -->
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<!-- Google Fonts: JetBrains Mono (numeric data) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E7C86'/%3E%3Cpath d='M8 30 L20 24 L20 30 L32 16 L40 10' stroke='white' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+
+<style>
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+:root, [data-theme="light"] {
+  --color-bg: #F3F6F8;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F8FAFB;
+  --color-surface-offset: #ECF1F4;
+  --color-divider: #E2E8EC;
+  --color-border: #D6DEE4;
+
+  --color-text: #10171D;
+  --color-text-muted: #566472;
+  --color-text-faint: #9AA9B3;
+  --color-text-inverse: #F5F8F9;
+
+  --color-primary: #0E7C86;
+  --color-primary-hover: #0A5F67;
+  --color-primary-active: #084B51;
+  --color-primary-highlight: #D3EBEC;
+
+  --color-current: #3A5AA6;
+  --color-current-highlight: #DCE4F3;
+
+  --color-warning: #C2540A;
+  --color-warning-hover: #A0450A;
+  --color-warning-highlight: #F5E1CE;
+
+  --color-error: #AF2A55;
+  --color-error-highlight: #F2D6E0;
+
+  --color-success: #2E7D46;
+  --color-success-highlight: #D8EBDC;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 23, 29, 0.05);
+  --shadow-md: 0 6px 16px rgba(16, 23, 29, 0.07);
+  --shadow-lg: 0 16px 36px rgba(16, 23, 29, 0.10);
+
+  --transition-interactive: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0B1116;
+  --color-surface: #121A21;
+  --color-surface-2: #16202A;
+  --color-surface-offset: #1B2732;
+  --color-divider: #202D38;
+  --color-border: #29394678;
+
+  --color-text: #DCE5EA;
+  --color-text-muted: #8DA0AC;
+  --color-text-faint: #5B6C78;
+  --color-text-inverse: #0B1116;
+
+  --color-primary: #4FB9C4;
+  --color-primary-hover: #74CBD4;
+  --color-primary-active: #93D8DF;
+  --color-primary-highlight: #17333A;
+
+  --color-current: #7C97DA;
+  --color-current-highlight: #1E2A45;
+
+  --color-warning: #E28C4B;
+  --color-warning-hover: #EAA36D;
+  --color-warning-highlight: #3A2A19;
+
+  --color-error: #E06E92;
+  --color-error-highlight: #3A2130;
+
+  --color-success: #6FC489;
+  --color-success-highlight: #1B3324;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+:root {
+  --font-display: 'General Sans', 'Helvetica Neue', sans-serif;
+  --font-body: 'Satoshi', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.84rem + 0.2vw, 0.9375rem);
+  --text-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  --text-lg: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-xl: clamp(1.375rem, 1.15rem + 1vw, 1.875rem);
+
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+  --space-12: 3rem; --space-16: 4rem; --space-20: 5rem;
+}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.55;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+img, svg { display: block; max-width: 100%; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+a, button, [role="button"], input, select {
+  transition: color var(--transition-interactive), background var(--transition-interactive),
+    border-color var(--transition-interactive), box-shadow var(--transition-interactive),
+    transform var(--transition-interactive);
+}
+
+.tabular { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--space-4); }
+
+header.topbar {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in oklab, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-divider);
+}
+.topbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) var(--space-4);
+  max-width: 1180px; margin: 0 auto;
+  gap: var(--space-3);
+}
+.brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-current));
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.brand-mark svg { width: 20px; height: 20px; }
+.brand-text { min-width: 0; }
+.brand-text h1 {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-base);
+  line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.brand-text p {
+  font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: var(--radius-full);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--color-border); color: var(--color-text-muted); flex-shrink: 0;
+}
+.theme-toggle:hover { color: var(--color-text); border-color: var(--color-text-faint); }
+.theme-toggle svg { width: 17px; height: 17px; }
+
+main { padding: var(--space-6) 0 var(--space-16); }
+
+.hero { padding: var(--space-2) 0 var(--space-6); }
+.hero h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-xl);
+  letter-spacing: -0.01em;
+}
+.hero p { color: var(--color-text-muted); margin-top: var(--space-2); max-width: 68ch; font-size: var(--text-sm); }
+.hero .jump-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+.hero .jump-row a {
+  font-size: var(--text-xs); font-weight: 600; color: var(--color-text-muted);
+  background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-3); text-decoration: none;
+}
+.hero .jump-row a:hover { color: var(--color-text); border-color: var(--color-text-faint); }
+
+.grid-inputs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 780px) { .grid-inputs { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+.card + .card { margin-top: var(--space-5); }
+
+.card-head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
+.card-dot { width: 9px; height: 9px; border-radius: var(--radius-full); flex-shrink: 0; }
+.card-dot.current { background: var(--color-current); }
+.card-dot.offer { background: var(--color-primary); }
+.card-head h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); }
+.card-head .tag {
+  margin-left: auto; font-size: var(--text-xs); color: var(--color-text-muted);
+  background: var(--color-surface-offset); padding: 2px var(--space-2); border-radius: var(--radius-full);
+}
+
+.field { margin-bottom: var(--space-4); }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em;
+}
+.field label .val { font-family: var(--font-mono); color: var(--color-text); font-size: var(--text-sm); text-transform: none; letter-spacing: 0; }
+.input-shell {
+  position: relative; display: flex; align-items: center;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface-2); overflow: hidden;
+}
+.input-shell:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-highlight); }
+.input-shell .prefix, .input-shell .suffix {
+  padding: 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-faint); flex-shrink: 0;
+}
+.input-shell input[type="number"] {
+  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+  padding: var(--space-3) var(--space-2); font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--color-text);
+}
+.input-shell select {
+  flex: 1; background: transparent; border: none; outline: none; padding: var(--space-3);
+  font-size: var(--text-sm); appearance: none;
+}
+.select-shell { position: relative; }
+.select-shell::after {
+  content: ""; position: absolute; right: var(--space-3); top: 50%; width: 8px; height: 8px;
+  border-right: 1.6px solid var(--color-text-faint); border-bottom: 1.6px solid var(--color-text-faint);
+  transform: translateY(-65%) rotate(45deg); pointer-events: none;
+}
+
+input[type="range"] {
+  width: 100%; height: 28px; background: transparent; -webkit-appearance: none; appearance: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px; border-radius: var(--radius-full); background: var(--color-surface-offset);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--color-primary); border: 3px solid var(--color-surface);
+  box-shadow: var(--shadow-sm); margin-top: -8px; cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 5px; border-radius: var(--radius-full); background: var(--color-surface-offset); }
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary);
+  border: 3px solid var(--color-surface); cursor: pointer;
+}
+
+.help { font-size: var(--text-xs); color: var(--color-text-faint); margin-top: var(--space-2); line-height: 1.4; }
+
+.seg {
+  display: flex; background: var(--color-surface-offset); border-radius: var(--radius-md);
+  padding: 3px; gap: 3px;
+}
+.seg button {
+  flex: 1; padding: var(--space-2) var(--space-3); border-radius: calc(var(--radius-md) - 3px);
+  font-size: var(--text-xs); font-weight: 600; color: var(--color-text-muted); text-align: center;
+}
+.seg button.active { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
+
+.subtotal-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: var(--space-4); margin-top: var(--space-4); border-top: 1px dashed var(--color-divider);
+}
+.subtotal-row .lbl { font-size: var(--text-sm); color: var(--color-text-muted); }
+.subtotal-row .amt { font-family: var(--font-mono); font-size: var(--text-lg); font-weight: 700; }
+
+/* KPI row */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.kpi::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--bar, var(--color-primary));
+}
+.kpi .label { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 500; }
+.kpi .value { font-family: var(--font-mono); font-size: var(--text-xl); font-weight: 700; margin-top: var(--space-2); line-height: 1.1; }
+.kpi .sub { font-size: var(--text-xs); color: var(--color-text-faint); margin-top: var(--space-2); }
+.kpi.warn { --bar: var(--color-warning); }
+.kpi.warn .value { color: var(--color-warning); }
+.kpi.good { --bar: var(--color-success); }
+.kpi.good .value { color: var(--color-success); }
+.kpi.bad .value { color: var(--color-error); }
+.kpi.bad { --bar: var(--color-error); }
+
+.section {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm); scroll-margin-top: 84px;
+}
+.section-head { margin-bottom: var(--space-4); }
+.section-head h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); }
+.section-head p { color: var(--color-text-muted); font-size: var(--text-sm); margin-top: var(--space-1); }
+.section-head .kicker {
+  display: inline-block; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--color-primary); margin-bottom: var(--space-1);
+}
+
+.chart-box { position: relative; height: 280px; margin-top: var(--space-4); }
+.chart-box.tall { height: 320px; }
+
+.callout {
+  margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius-md);
+  background: var(--color-surface-offset); border: 1px solid var(--color-divider);
+  font-size: var(--text-sm); display: flex; gap: var(--space-3); align-items: flex-start;
+}
+.callout.good { background: var(--color-success-highlight); border-color: color-mix(in oklab, var(--color-success) 35%, var(--color-divider)); }
+.callout.bad { background: var(--color-error-highlight); border-color: color-mix(in oklab, var(--color-error) 35%, var(--color-divider)); }
+.callout.warn { background: var(--color-warning-highlight); border-color: color-mix(in oklab, var(--color-warning) 35%, var(--color-divider)); }
+.callout strong { display: block; margin-bottom: 2px; font-family: var(--font-display); }
+.callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+
+.legend-row { display: flex; gap: var(--space-5); flex-wrap: wrap; font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-3); }
+.legend-row span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.legend-row i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+.mini-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+
+/* =========================================================
+   NEW: company comparison table
+   ========================================================= */
+.table-scroll { overflow-x: auto; margin-top: var(--space-4); border: 1px solid var(--color-divider); border-radius: var(--radius-md); }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); min-width: 620px; }
+.cmp-table th, .cmp-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-divider); text-align: left; vertical-align: top; }
+.cmp-table tr:last-child td { border-bottom: none; }
+.cmp-table thead th {
+  font-family: var(--font-display); font-weight: 600; font-size: var(--text-sm);
+  background: var(--color-surface-2); position: sticky; top: 0;
+}
+.cmp-table thead th .hdr { display: flex; align-items: center; gap: var(--space-2); }
+.cmp-table td.metric { color: var(--color-text-muted); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; width: 190px; }
+.cmp-table td.dd { border-left: 2px solid var(--color-current-highlight); }
+.cmp-table td.sq { border-left: 2px solid var(--color-primary-highlight); }
+.cmp-table td p { font-size: var(--text-sm); }
+.cmp-table td span.src { display: block; font-size: 0.68rem; color: var(--color-text-faint); margin-top: 3px; }
+
+/* =========================================================
+   NEW: SWOT grids
+   ========================================================= */
+.swot-company-head { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-6) 0 var(--space-3); }
+.swot-company-head:first-of-type { margin-top: 0; }
+.swot-company-head h4 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); }
+.swot-company-head .tag { font-size: var(--text-xs); color: var(--color-text-muted); background: var(--color-surface-offset); padding: 2px var(--space-2); border-radius: var(--radius-full); }
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+@media (max-width: 700px) { .swot-grid { grid-template-columns: 1fr; } }
+.swot-cell { border-radius: var(--radius-md); padding: var(--space-4); border: 1px solid var(--color-divider); }
+.swot-cell h5 { font-family: var(--font-display); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: var(--space-2); }
+.swot-cell ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.swot-cell li { font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.5; padding-left: 1.05em; position: relative; }
+.swot-cell li::before { content: "—"; position: absolute; left: 0; color: var(--color-text-faint); }
+.swot-cell.strength { background: var(--color-success-highlight); border-color: color-mix(in oklab, var(--color-success) 32%, var(--color-divider)); }
+.swot-cell.weakness { background: var(--color-error-highlight); border-color: color-mix(in oklab, var(--color-error) 32%, var(--color-divider)); }
+.swot-cell.opportunity { background: var(--color-primary-highlight); border-color: color-mix(in oklab, var(--color-primary) 32%, var(--color-divider)); }
+.swot-cell.threat { background: var(--color-warning-highlight); border-color: color-mix(in oklab, var(--color-warning) 32%, var(--color-divider)); }
+
+/* =========================================================
+   NEW: career growth / quality-of-life scorecard
+   ========================================================= */
+.dim-card {
+  border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+  padding: var(--space-4); margin-bottom: var(--space-3); background: var(--color-surface-2);
+}
+.dim-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; }
+.dim-head h4 { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; }
+.dim-head p { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 2px; max-width: 46ch; }
+.dim-weight { flex-shrink: 0; width: 150px; }
+.dim-weight label { display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: 2px; }
+.dim-weight .val { font-family: var(--font-mono); color: var(--color-text); }
+.dim-sliders { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-3); }
+@media (max-width: 700px) { .dim-sliders { grid-template-columns: 1fr; } }
+.dim-slider label { font-size: var(--text-xs); color: var(--color-text-muted); display: flex; justify-content: space-between; margin-bottom: 2px; font-weight: 600; }
+.dim-slider label .name { display: inline-flex; align-items: center; gap: 6px; }
+.dim-slider label i { width: 8px; height: 8px; border-radius: var(--radius-full); display: inline-block; }
+.dim-slider .val { font-family: var(--font-mono); color: var(--color-text); font-weight: 700; }
+.dim-slider p.help { margin-top: 4px; }
+
+.score-summary { margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px dashed var(--color-divider); }
+.score-bar-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.score-bar-row .name { width: 82px; font-size: var(--text-xs); color: var(--color-text-muted); flex-shrink: 0; font-weight: 600; }
+.score-bar-track { flex: 1; height: 14px; background: var(--color-surface-offset); border-radius: var(--radius-full); overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: var(--radius-full); transition: width var(--transition-interactive); width: 0%; }
+.score-bar-fill.current { background: var(--color-current); }
+.score-bar-fill.offer { background: var(--color-primary); }
+.score-bar-val { width: 40px; text-align: right; font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 700; flex-shrink: 0; }
+
+/* =========================================================
+   NEW: verdict panel
+   ========================================================= */
+.verdict-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-4); }
+@media (max-width: 780px) { .verdict-grid { grid-template-columns: 1fr; } }
+.verdict-metric { background: var(--color-surface-2); border: 1px solid var(--color-divider); border-radius: var(--radius-md); padding: var(--space-4); }
+.verdict-metric .k { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.02em; font-weight: 600; }
+.verdict-metric .v { font-size: var(--text-sm); margin-top: var(--space-2); line-height: 1.45; }
+
+/* =========================================================
+   NEW: sources
+   ========================================================= */
+.sources-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-top: var(--space-4); }
+@media (max-width: 780px) { .sources-cols { grid-template-columns: 1fr; } }
+.sources-cols h5 { font-family: var(--font-display); font-size: var(--text-sm); margin-bottom: var(--space-2); }
+.sources-list { font-size: var(--text-xs); color: var(--color-text-muted); line-height: 1.9; list-style: decimal; padding-left: 1.3em; }
+.sources-list a { color: var(--color-primary); text-decoration: none; }
+.sources-list a:hover { text-decoration: underline; }
+
+footer {
+  border-top: 1px solid var(--color-divider); padding: var(--space-8) 0; margin-top: var(--space-8);
+}
+footer p { font-size: var(--text-xs); color: var(--color-text-faint); line-height: 1.6; max-width: 74ch; }
+footer p + p { margin-top: var(--space-2); }
+
+@media (max-width: 640px) {
+  .hero h2 { font-size: var(--text-lg); }
+  .card, .section { padding: var(--space-4); }
+  .chart-box { height: 240px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M8 32 L19 26 L19 32 L31 17 L40 11" stroke="white" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>DoorDash vs. Square — Decision Model</h1>
+        <p>Comp, equity, career growth &amp; company outlook</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to light mode" data-testid="button-theme-toggle"></button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h2>Should you take the offer?</h2>
+    <p>Enter your current DoorDash package and the terms of the Square offer. This models the equity you'd forfeit by leaving, how long the new offer needs to make that back, and your commission upside if the new role's quota attainment doesn't match your current pace — then layers in a researched DoorDash-vs-Square/Block company comparison, a SWOT for each, and a weighted scorecard for career growth and quality of life, so you're weighing the whole decision, not just the paycheck.</p>
+    <div class="jump-row">
+      <a href="#sec-vest">1. Cost of leaving</a>
+      <a href="#sec-breakeven">2. Break-even</a>
+      <a href="#sec-quota">3. Quota risk</a>
+      <a href="#sec-compare">4. Company scorecard</a>
+      <a href="#sec-swot">5. SWOT</a>
+      <a href="#sec-quality">6. Career &amp; quality of life</a>
+      <a href="#sec-verdict">7. The verdict</a>
+      <a href="#sec-sources">8. Sources</a>
+    </div>
+  </section>
+
+  <div class="grid-inputs">
+    <!-- CURRENT PACKAGE -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-dot current"></span>
+        <h3>Current package — DoorDash</h3>
+        <span class="tag">Today</span>
+      </div>
+
+      <div class="field">
+        <label>Base salary <span class="val tabular" id="valCurBase">$121,789</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curBase" value="121789" step="500" inputmode="decimal" data-testid="input-current-base" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Commission target (100% quota) <span class="val tabular" id="valCurCommTarget">$52,200</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curCommTarget" value="52200" step="100" inputmode="decimal" data-testid="input-current-commission-target" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Current quota attainment <span class="val tabular" id="valCurQuota">165%</span></label>
+        <input type="range" id="curQuota" min="50" max="220" step="1" value="165" data-testid="slider-current-quota" />
+        <p class="help">Your trailing performance — used to calculate the commission you're actually earning today, not just target.</p>
+      </div>
+
+      <div class="field">
+        <label>Equity grant, annual vest value <span class="val tabular" id="valCurEquity">$38,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curEquityAnnual" value="38000" step="500" inputmode="decimal" data-testid="input-current-equity" />
+        </div>
+        <p class="help">The equity component of TDC — the annual value of shares vesting this year.</p>
+      </div>
+
+      <div class="subtotal-row">
+        <span class="lbl">Actual total comp (at current quota)</span>
+        <span class="amt tabular" id="curTDCOut">$0</span>
+      </div>
+
+      <div class="field" style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider);">
+        <label>Total unvested equity <span class="val tabular" id="valUnvested">$130,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="unvestedTotal" value="130000" step="1000" inputmode="decimal" data-testid="input-unvested-total" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Vesting cliff remaining <span class="val tabular" id="valCliff">2.0 yrs</span></label>
+        <div class="input-shell">
+          <input type="number" id="cliffYears" value="2" step="0.25" min="0.25" inputmode="decimal" data-testid="input-cliff-years" />
+          <span class="suffix">years</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Vesting model</label>
+        <div class="seg" id="vestModelSeg" data-testid="seg-vesting-model">
+          <button data-value="cliff" class="active" type="button">Cliff (all-or-nothing)</button>
+          <button data-value="linear" type="button">Linear (pro-rata monthly)</button>
+        </div>
+        <p class="help" id="vestModelHelp">Cliff: you forfeit 100% of the unvested pool until the cliff date, then it vests in full. Toggle to Linear to model pro-rata monthly vesting instead.</p>
+      </div>
+    </div>
+
+    <!-- NEW OFFER -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-dot offer"></span>
+        <h3>New offer — Square</h3>
+        <span class="tag">Prospective</span>
+      </div>
+
+      <div class="field">
+        <label>Base salary <span class="val tabular" id="valNewBase">$140,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="newBase" value="140000" step="500" inputmode="decimal" data-testid="input-new-base" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Target commission, % of base <span class="val tabular" id="valNewCommPct">45%</span></label>
+        <input type="range" id="newCommPct" min="0" max="100" step="1" value="45" data-testid="slider-new-commission-pct" />
+        <p class="help">On-target commission at 100% quota: <span class="tabular" id="valNewCommTarget">$63,000</span></p>
+      </div>
+
+      <div class="field">
+        <label>New equity grant, annual vest value <span class="val tabular" id="valNewEquity">$45,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="newEquityAnnual" value="45000" step="500" inputmode="decimal" data-testid="input-new-equity" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Assumed quota attainment, new role <span class="val tabular" id="valNewQuota">110%</span></label>
+        <input type="range" id="newQuota" min="30" max="220" step="1" value="110" data-testid="slider-new-quota" />
+        <p class="help">Unlike your current role, you have no track record here yet — this is your best estimate. Drag to stress-test optimistic and conservative cases.</p>
+      </div>
+
+      <div class="subtotal-row">
+        <span class="lbl">Actual total comp (at assumed quota)</span>
+        <span class="amt tabular" id="newTDCOut">$0</span>
+      </div>
+
+      <div class="field" style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider);">
+        <label>Months from today until you'd give notice <span class="val tabular" id="valLeaveMonths">0 mo</span></label>
+        <input type="range" id="leaveMonths" min="0" max="36" step="1" value="0" data-testid="slider-leave-months" />
+        <p class="help">Drag forward in time to see how much of your unvested equity you'd keep the longer you stay before leaving.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Current actual TDC</div>
+      <div class="value tabular" id="kpiCurTDC">$0</div>
+      <div class="sub">Base + commission + equity, today</div>
+    </div>
+    <div class="kpi">
+      <div class="label">New offer actual TDC</div>
+      <div class="value tabular" id="kpiNewTDC">$0</div>
+      <div class="sub">At your assumed quota attainment</div>
+    </div>
+    <div class="kpi warn">
+      <div class="label">Equity you'd forfeit</div>
+      <div class="value tabular" id="kpiLostEquity">$0</div>
+      <div class="sub" id="kpiLostEquitySub">If you leave today</div>
+    </div>
+    <div class="kpi" id="kpiBreakevenCard">
+      <div class="label">Break-even timeline</div>
+      <div class="value tabular" id="kpiBreakeven">—</div>
+      <div class="sub">Years for the new offer to recover the loss</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>Reality check: neither company's equity value is fixed</strong><span>As of early September 2026, DoorDash (DASH) is up roughly 54–67% over the trailing year but ~40%+ off its 2026 high as investors weigh heavy spend against margins. Square's parent, Block, Inc. (NYSE: XYZ, renamed from SQ in Jan 2025), is up only ~11% over the trailing year and has swung across a range spanning ~1.8x in the past 52 weeks. The equity figures you enter above are today's annualized value — actual realized value for either offer depends on where the stock goes, and Block's has historically moved a lot more than DoorDash's. See section 4 for the numbers behind this.</span></div>
+  </div>
+
+  <!-- CHART 1: VESTING -->
+  <div class="section" id="sec-vest">
+    <div class="section-head">
+      <span class="kicker">Financial — cost of leaving</span>
+      <h3>1. The cost of leaving before you vest</h3>
+      <p>What you'd keep vs. forfeit from your $<span class="tabular" id="ctxUnvested">130,000</span> unvested pool, based on when you give notice.</p>
+    </div>
+    <div class="chart-box"><canvas id="vestChart" data-testid="chart-vesting"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-success)"></i>Vested (keeps)</span>
+      <span><i style="background:var(--color-warning)"></i>Forfeited (loses)</span>
+      <span><i style="background:var(--color-current)"></i>Your selected exit month</span>
+    </div>
+    <div class="callout warn" id="vestCallout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <div><strong id="vestCalloutTitle">Leaving today forfeits $130,000</strong><span id="vestCalloutBody">None of your unvested pool has cleared the cliff yet.</span></div>
+    </div>
+  </div>
+
+  <!-- CHART 2: BREAKEVEN -->
+  <div class="section" id="sec-breakeven">
+    <div class="section-head">
+      <span class="kicker">Financial — payback</span>
+      <h3>2. Break-even timeline for the new offer</h3>
+      <p>Cumulative earnings of the new offer minus staying, netting out the equity you'd forfeit on day one. Below zero means you're still behind; the line crosses zero at your break-even year.</p>
+    </div>
+    <div class="chart-box tall"><canvas id="breakevenChart" data-testid="chart-breakeven"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-error)"></i>Still behind (net negative)</span>
+      <span><i style="background:var(--color-success)"></i>Ahead of staying (net positive)</span>
+      <span><i style="background:var(--color-current)"></i>Break-even year</span>
+    </div>
+    <div class="callout" id="breakevenCallout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 8l-5 5-4-4-4 4"/></svg>
+      <div><strong id="breakevenTitle">—</strong><span id="breakevenBody">—</span></div>
+    </div>
+  </div>
+
+  <!-- CHART 3: QUOTA RISK -->
+  <div class="section" id="sec-quota">
+    <div class="section-head">
+      <span class="kicker">Financial — performance risk</span>
+      <h3>3. Quota performance: proven upside vs. new-role uncertainty</h3>
+      <p>Your 165%-style attainment is a track record with this quota; the new role has no track record yet. This shows new-offer TDC across a range of possible outcomes.</p>
+    </div>
+    <div class="chart-box"><canvas id="quotaChart" data-testid="chart-quota"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-primary)"></i>New offer TDC at each attainment level</span>
+      <span><i style="background:var(--color-current)"></i>Your current TDC, proven</span>
+    </div>
+    <div class="callout warn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+      <div><strong>New-role ramp risk</strong><span>Most reps run below 100% attainment through a ramp period in a new role. Compare the bars at lower attainment levels (50-80%) against your proven current TDC to see the realistic downside — not just the optimistic case.</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: COMPANY COMPARISON -->
+  <div class="section" id="sec-compare">
+    <div class="section-head">
+      <span class="kicker">Company research</span>
+      <h3>4. Company scorecard: DoorDash vs. Square (Block, Inc.)</h3>
+      <p>Public-market and workforce data, researched September 2026. Square is a business unit of Block, Inc. — Block is the entity whose stock, financials, and employer reputation actually govern your equity and job security, so that's what's compared here. Every figure is sourced in section 8.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th style="width:190px;">Metric</th>
+            <th><span class="hdr"><span class="card-dot current"></span>DoorDash (DASH)</span></th>
+            <th><span class="hdr"><span class="card-dot offer"></span>Square / Block (XYZ)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric">Ticker · exchange</td>
+            <td class="dd">DASH · Nasdaq</td>
+            <td class="sq">XYZ · NYSE <span class="src">Renamed from SQ, Jan 21, 2026</span></td>
+          </tr>
+          <tr>
+            <td class="metric">Market cap (~Sept 2026)</td>
+            <td class="dd">~$91.7B</td>
+            <td class="sq">~$49.5B</td>
+          </tr>
+          <tr>
+            <td class="metric">Latest quarter (Q2 2026)</td>
+            <td class="dd">Revenue $4.45–4.5B (+36% YoY); GOV $33.1B (+36% YoY); orders +27% YoY</td>
+            <td class="sq">Gross profit $3.17B (+25% YoY); revenue $6.62B, beat consensus $6.54B</td>
+          </tr>
+          <tr>
+            <td class="metric">Profitability signal</td>
+            <td class="dd">Adjusted EBITDA +40% YoY to $914M — but GAAP net income <em>fell</em> 30% YoY to $200M on heavy investment spend</td>
+            <td class="sq">Adjusted EPS $1.02 (beat est. $0.79–0.86); FY26 guidance raised: gross profit +21%, adj. EPS +70% YoY</td>
+          </tr>
+          <tr>
+            <td class="metric">Stock, trailing 12 months</td>
+            <td class="dd">Up ~54–67%, but ~40%+ off its 2026 high — a volatile year despite the strong trailing return</td>
+            <td class="sq">Up only ~11% (+19% YTD 2026); 52-week range spans ~1.8x, incl. an 18% dip in one 90-day stretch</td>
+          </tr>
+          <tr>
+            <td class="metric">Analyst consensus</td>
+            <td class="dd">Buy · avg. target ~$246–254 (range $172–350); JPMorgan named it a 2026 "top pick," $305 target</td>
+            <td class="sq">Buy (37 buy / 7 hold / 0 sell) · avg. target ~$91.70–92.36 (range $50–119)</td>
+          </tr>
+          <tr>
+            <td class="metric">Employee rating (Glassdoor)</td>
+            <td class="dd">3.6 / 5 (4,882 reviews)</td>
+            <td class="sq">3.3 / 5 (2,132 reviews, down ~10% YoY) — only 46% would recommend to a friend</td>
+          </tr>
+          <tr>
+            <td class="metric">Career growth signal</td>
+            <td class="dd">Manager-dependent; some reviews flag promotions as "harder to come by" lately</td>
+            <td class="sq">Consistently the weakest sub-score company-wide (Glassdoor career-opportunities 3.1/5, Blind career-growth 3.4/5)</td>
+          </tr>
+          <tr>
+            <td class="metric">Work-life balance signal</td>
+            <td class="dd">Highly team/manager-dependent; no mandatory return-to-office policy found</td>
+            <td class="sq">Blind's highest sub-score on paper (4.3/5) — but "rolling layoffs and re-orgs" is the most-cited stressor</td>
+          </tr>
+          <tr>
+            <td class="metric">Workforce stability</td>
+            <td class="dd">No confirmed layoffs in 2025–26; headcount +22.8% (2023→2024); two 2025 acquisitions (Deliveroo $3.9B, SevenRooms $1.2B)</td>
+            <td class="sq">Two rounds of cuts in 12 months: ~8% (Mar 2025), up to ~10% (Feb 2026, framed internally as AI-driven)</td>
+          </tr>
+          <tr>
+            <td class="metric">Key regulatory / strategic risk</td>
+            <td class="dd">NYC gig-worker law (Jan 2026, guaranteed min. pay + deactivation-appeal rights); wound down Deliveroo/Wolt ops in 4 countries (Feb 2026)</td>
+            <td class="sq">$80M multistate BSA/AML settlement (Jan 2025) over Cash App compliance failures; ongoing 9-month review + 12-month remediation</td>
+          </tr>
+          <tr>
+            <td class="metric">Equity vesting mechanics</td>
+            <td class="dd">Front-loaded RSU schedule (40/30/20/10) — later-year comp leans on performance-based refreshers, not guaranteed</td>
+            <td class="sq">Standard 4-year RSU, 25%/year; some reporting suggests staff may be offered cash in lieu of stock (unverified)</td>
+          </tr>
+          <tr>
+            <td class="metric">Public sales-comp benchmark</td>
+            <td class="dd">RepVue score 85.47; ~67% of reps meet/exceed quota</td>
+            <td class="sq">RepVue: AE base $75–110k / OTE $120–190k (58/42 split); Enterprise AE base $130–165k / OTE $260–330k (48/52 split)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SWOT -->
+  <div class="section" id="sec-swot">
+    <div class="section-head">
+      <span class="kicker">Company research</span>
+      <h3>5. SWOT analysis</h3>
+      <p>Strengths, weaknesses, opportunities, and threats for each company, drawn from the same research base as section 4.</p>
+    </div>
+
+    <div class="swot-company-head"><span class="card-dot current"></span><h4>DoorDash</h4><span class="tag">Current employer</span></div>
+    <div class="swot-grid">
+      <div class="swot-cell strength">
+        <h5>Strengths</h5>
+        <ul>
+          <li>Dominant US restaurant-delivery order share (~56–65%) vs. Uber Eats (~23%) and Grubhub (~16%)</li>
+          <li>Ad revenue "substantially larger" than $100M/year and growing, expanding into grocery/CPG advertisers</li>
+          <li>International scale via Wolt + Deliveroo spanning ~40 countries</li>
+          <li>Adjusted EBITDA +40% YoY in Q2 2026 even while absorbing heavy integration spend</li>
+        </ul>
+      </div>
+      <div class="swot-cell weakness">
+        <h5>Weaknesses</h5>
+        <ul>
+          <li>GAAP net income fell 30% YoY (Q2 2026) despite revenue growth — margin compression from investment spend</li>
+          <li>Wound down Deliveroo/Wolt operations in four countries (Feb 2026) — uneven international execution</li>
+          <li>Some employees describe promotions as "harder to come by" recently (Blind)</li>
+          <li>Thin restaurant-side margins persist industry-wide, a structural constraint on the core business</li>
+        </ul>
+      </div>
+      <div class="swot-cell opportunity">
+        <h5>Opportunities</h5>
+        <ul>
+          <li>Advertising and grocery/retail diversification (SevenRooms acquisition, $1.2B, 2025)</li>
+          <li>New global tech platform targeted for H1 2027 to unlock international synergies</li>
+          <li>Large remaining international TAM despite the recent four-country retrenchment</li>
+        </ul>
+      </div>
+      <div class="swot-cell threat">
+        <h5>Threats</h5>
+        <ul>
+          <li>NYC's Jan 2026 gig-worker law (guaranteed minimum pay, deactivation-appeal rights) may set a precedent other cities follow</li>
+          <li>Investor skepticism about 2026 spend vs. near-term GAAP profit — the dominant narrative behind the ~40% pullback from highs</li>
+          <li>Uber Eats and Instacart competitive pressure in adjacent categories</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="swot-company-head"><span class="card-dot offer"></span><h4>Square (Block, Inc.)</h4><span class="tag">Prospective employer</span></div>
+    <div class="swot-grid">
+      <div class="swot-cell strength">
+        <h5>Strengths</h5>
+        <ul>
+          <li>Square segment GPV and gross profit growth accelerating — "strongest since Q2 2023" as of Q2 2026</li>
+          <li>Cash App is now the larger profit engine: gross profit +31% YoY, lending originations +59% YoY</li>
+          <li>FY26 guidance raised across gross profit, operating income, and EPS</li>
+          <li>Analyst consensus firmly "Buy" (37 buy / 7 hold / 0 sell of ~40 analysts)</li>
+        </ul>
+      </div>
+      <div class="swot-cell weakness">
+        <h5>Weaknesses</h5>
+        <ul>
+          <li>"Career opportunities" rating (3.1/5 Glassdoor) is a consistent weak point company-wide</li>
+          <li>Two rounds of layoffs in 12 months (~8% Mar 2025, ~10% Feb 2026) — only 46% of reviewers would recommend it to a friend</li>
+          <li>$80M multistate BSA/AML settlement (Jan 2025) over Cash App compliance failures, incl. a ~170,000-alert unprocessed SAR backlog</li>
+          <li>Seller-side competition from Toast, Clover, and Shopify POS squeezing the core Square merchant base</li>
+        </ul>
+      </div>
+      <div class="swot-cell opportunity">
+        <h5>Opportunities</h5>
+        <ul>
+          <li>Aggressive 2026 Bitcoin/crypto push (Bitkey wallet, fee-free BTC purchases, merchant tap-to-pay BTC acceptance)</li>
+          <li>Consumer lending expansion (+59% YoY originations) via AI-driven underwriting</li>
+          <li>Cash App banking/card products capturing a larger share of members' financial lives</li>
+        </ul>
+      </div>
+      <div class="swot-cell threat">
+        <h5>Threats</h5>
+        <ul>
+          <li>Stock is far more volatile than DASH — 52-week range spans ~1.8x, incl. an 18% dip in one 90-day stretch in 2026</li>
+          <li>Ongoing regulatory remediation tied to the AML settlement (9-month review + 12-month remediation plan)</li>
+          <li>Recurring layoffs cited internally as the biggest stress factor — "rolling layoffs and re-orgs" (Blind)</li>
+          <li>Trailing 12-month stock return (~11%) has meaningfully lagged DoorDash's (~54–67%) over the same window</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: CAREER GROWTH & QUALITY OF LIFE -->
+  <div class="section" id="sec-quality">
+    <div class="section-head">
+      <span class="kicker">Beyond the paycheck</span>
+      <h3>6. Career growth &amp; quality-of-life index</h3>
+      <p>The financial model above answers "how much." This answers "at what cost, and toward what." Each dimension below is pre-scored from the research in sections 4–5 — drag the weight sliders to reflect what actually matters to <em>you</em>, and adjust any score you think the research got wrong for your specific situation. The last dimension is intentionally left neutral: no public research can tell you whether you'd rather build in food delivery or fintech.</p>
+    </div>
+    <div id="dimContainer"></div>
+    <div class="score-summary">
+      <div class="score-bar-row">
+        <span class="name">DoorDash</span>
+        <div class="score-bar-track"><div class="score-bar-fill current" id="curScoreBar"></div></div>
+        <span class="score-bar-val tabular" id="curScoreVal">0</span>
+      </div>
+      <div class="score-bar-row">
+        <span class="name">Square</span>
+        <div class="score-bar-track"><div class="score-bar-fill offer" id="sqScoreBar"></div></div>
+        <span class="score-bar-val tabular" id="sqScoreVal">0</span>
+      </div>
+      <p class="help">Weighted index, 0–100. This is a structured way to make an inherently subjective judgment explicit and revisit-able — not an objective score. Change any weight or slider and the verdict below updates.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7: VERDICT -->
+  <div class="section" id="sec-verdict">
+    <div class="section-head">
+      <span class="kicker">Synthesis</span>
+      <h3>7. The verdict</h3>
+      <p>Where your numbers and your priorities currently point — updates live as you adjust anything above.</p>
+    </div>
+    <div class="verdict-grid">
+      <div class="verdict-metric">
+        <div class="k">Financially</div>
+        <div class="v" id="vFinancial">—</div>
+      </div>
+      <div class="verdict-metric">
+        <div class="k">Career growth &amp; quality of life</div>
+        <div class="v" id="vQuality">—</div>
+      </div>
+      <div class="verdict-metric">
+        <div class="k">The tension</div>
+        <div class="v" id="vTension">—</div>
+      </div>
+    </div>
+    <div class="callout warn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+      <div><strong>Before you decide, worth asking Square directly</strong><span>What does refresher-grant history look like for Square AEs (Block's DoorDash-equivalent front-loaded-vs-flat vesting policy)? How has the sales org been affected by the Feb 2026 reduction? What's the realistic ramp-to-quota timeline other recent AE hires have hit? Their answers will do more to close the gap in this model than any public data can.</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: SOURCES -->
+  <div class="section" id="sec-sources">
+    <div class="section-head">
+      <span class="kicker">Methodology</span>
+      <h3>8. Sources &amp; methodology</h3>
+      <p>All company research below was gathered via web search on September 5, 2026, and reflects publicly available information as of that date — it will go stale. Stock prices, analyst targets, and layoff/headcount figures move; re-verify anything time-sensitive before making a final decision. This is not financial, legal, or employment advice.</p>
+    </div>
+    <div class="sources-cols">
+      <div>
+        <h5>DoorDash</h5>
+        <ol class="sources-list">
+          <li><a href="https://ir.doordash.com/news/news-details/2026/DoorDash-Releases-Second-Quarter-2026-Financial-Results/default.aspx" target="_blank" rel="noopener">DoorDash Q2 2026 financial results (Investor Relations)</a></li>
+          <li><a href="https://www.sec.gov/Archives/edgar/data/0001792789/000179278926000050/dash-20260630.htm" target="_blank" rel="noopener">DoorDash Q2 2026 10-Q (SEC)</a></li>
+          <li><a href="https://finance.yahoo.com/markets/stocks/articles/doordash-q2-2026-earnings-revenue-132628820.html" target="_blank" rel="noopener">Yahoo Finance — DoorDash Q2 2026 earnings</a></li>
+          <li><a href="https://www.tikr.com/blog/doordash-stock-is-down-42-from-its-highs-heres-why-the-2026-selloff-could-set-up-2030-returns" target="_blank" rel="noopener">TIKR — DASH down ~42% from highs</a></li>
+          <li><a href="https://www.barchart.com/story/news/33130254/doordash-stock-is-up-126-in-a-year-is-it-too-late-to-buy-dash-at-3-year-highs" target="_blank" rel="noopener">Barchart — DASH 52-week context</a></li>
+          <li><a href="https://www.morningstar.com/stocks/xnas/dash/quote" target="_blank" rel="noopener">Morningstar — DASH quote / market cap</a></li>
+          <li><a href="https://stockanalysis.com/stocks/dash/forecast/" target="_blank" rel="noopener">stockanalysis.com — DASH analyst forecast</a></li>
+          <li><a href="https://www.tipranks.com/news/the-fly/doordash-price-target-lowered-to-280-from-350-at-oppenheimer-thefly" target="_blank" rel="noopener">TipRanks — analyst price-target moves</a></li>
+          <li><a href="https://www.warc.com/content/feed/ad-revenues-are-growing-fast-at-doordash/en-GB/9450" target="_blank" rel="noopener">WARC — DoorDash ad revenue growth</a></li>
+          <li><a href="https://www.businesswire.com/news/home/20260224973889/en/DoorDash-to-Wind-Down-Deliveroo-and-Wolt-Operations-in-Four-Countries" target="_blank" rel="noopener">Businesswire — Deliveroo/Wolt wind-down, Feb 2026</a></li>
+          <li><a href="https://pechmanlaw.com/new-yorks-gig-worker-law-what-rideshare-delivery-workers-need-to-know-in-2026/" target="_blank" rel="noopener">Pechman Law Group — NYC gig-worker law, 2026</a></li>
+          <li><a href="https://layoffs.fyi/company/doordash/" target="_blank" rel="noopener">Layoffs.fyi — DoorDash</a></li>
+          <li><a href="https://www.glassdoor.com/Reviews/DoorDash-Reviews-E813073.htm" target="_blank" rel="noopener">Glassdoor — DoorDash reviews</a></li>
+          <li><a href="https://www.teamblind.com/company/DoorDash/review/Sf_ZWPbYa" target="_blank" rel="noopener">Blind — DoorDash reviews</a></li>
+          <li><a href="https://www.repvue.com/companies/DoorDash" target="_blank" rel="noopener">RepVue — DoorDash sales-org score</a></li>
+          <li><a href="https://wfh.team/remote-policy-tracker/doordash" target="_blank" rel="noopener">WFH.team — DoorDash remote/RTO policy</a></li>
+          <li><a href="https://www.levels.fyi/blog/front-loaded-vesting.html" target="_blank" rel="noopener">Levels.fyi — front-loaded vesting explainer</a></li>
+          <li><a href="https://builtin.com/company/doordash/faq/career-growth-development" target="_blank" rel="noopener">Built In — DoorDash career growth</a></li>
+        </ol>
+      </div>
+      <div>
+        <h5>Square / Block, Inc.</h5>
+        <ol class="sources-list">
+          <li><a href="https://investors.block.xyz/investor-news/news-details/2025/Block-Announces-Ticker-Symbol-Change-to-XYZ-To-Report-Fourth-Quarter-Results/default.aspx" target="_blank" rel="noopener">Block Investor Relations — ticker change to XYZ</a></li>
+          <li><a href="https://finance.yahoo.com/markets/stocks/articles/block-inc-xyz-q2-2026-050452291.html" target="_blank" rel="noopener">Yahoo Finance — Block Q2 2026 earnings</a></li>
+          <li><a href="https://www.fool.com/earnings/call-transcripts/2026/08/12/block-xyz-q2-2026-earnings-call-transcript/" target="_blank" rel="noopener">Motley Fool — Block Q2 2026 earnings call transcript</a></li>
+          <li><a href="https://stockanalysis.com/stocks/xyz/" target="_blank" rel="noopener">stockanalysis.com — XYZ overview</a></li>
+          <li><a href="https://www.morningstar.com/stocks/xnys/xyz/quote" target="_blank" rel="noopener">Morningstar — XYZ quote / market cap</a></li>
+          <li><a href="https://www.tikr.com/blog/block-stock-is-up-19-in-2026-and-just-broke-out-heres-where-xyz-could-go" target="_blank" rel="noopener">TIKR — Block stock 2026 breakout</a></li>
+          <li><a href="https://www.benzinga.com/quote/XYZ/analyst-ratings" target="_blank" rel="noopener">Benzinga — XYZ analyst ratings</a></li>
+          <li><a href="https://www.wallstreetzen.com/stocks/us/nyse/xyz/stock-forecast" target="_blank" rel="noopener">WallStreetZen — XYZ forecast</a></li>
+          <li><a href="https://www.csbs.org/newsroom/state-regulators-issue-80-million-penalty-block-inc-cash-app-bsaaml-violations" target="_blank" rel="noopener">CSBS — $80M multistate BSA/AML penalty</a></li>
+          <li><a href="https://www.pymnts.com/news/regulation/2025/block-to-pay-80-million-to-settle-aml-violation-allegations/" target="_blank" rel="noopener">PYMNTS — $80M AML settlement</a></li>
+          <li><a href="https://www.sanctions.io/blog/the-block-inc-40m-aml-settlement" target="_blank" rel="noopener">sanctions.io — related $40M NYDFS action</a></li>
+          <li><a href="https://technologyadvice.com/blog/sales/square-vs-shopify/" target="_blank" rel="noopener">TechnologyAdvice — Square vs. Shopify</a></li>
+          <li><a href="https://www.forbes.com/advisor/business/software/square-vs-clover/" target="_blank" rel="noopener">Forbes Advisor — Square vs. Clover</a></li>
+          <li><a href="https://cryptorank.io/news/feed/b6b35-jack-dorseys-block-expands-bitcoin-push-with-bitkey-wallet-and-cash-app-upgrades" target="_blank" rel="noopener">CryptoRank — Block's 2026 Bitcoin push</a></li>
+          <li><a href="https://www.interviewpal.com/layoffs/block" target="_blank" rel="noopener">InterviewPal — Block layoffs tracker</a></li>
+          <li><a href="https://www.thehrdigest.com/block-layoffs-announced-dorsey-wants-a-startup-revolution-again/" target="_blank" rel="noopener">HR Digest — Block layoffs, 2026</a></li>
+          <li><a href="https://www.glassdoor.com/Reviews/Block-Reviews-E422050.htm" target="_blank" rel="noopener">Glassdoor — Block reviews</a></li>
+          <li><a href="https://www.teamblind.com/company/Block/reviews" target="_blank" rel="noopener">Blind — Block reviews</a></li>
+          <li><a href="https://www.repvue.com/companies/Square/salaries/account-executive" target="_blank" rel="noopener">RepVue — Square Account Executive comp</a></li>
+          <li><a href="https://www.repvue.com/companies/Square/salaries/enterprise-account-executive" target="_blank" rel="noopener">RepVue — Square Enterprise AE comp</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong style="color:var(--color-text)">Assumptions:</strong> Commission scales linearly with quota attainment (no accelerators, caps, or decelerators modeled). Equity figures are annual vest values you enter directly, not total grant size. "Forfeited equity" only reflects the unvested pool entered above — it excludes any new equity you'd earn going forward in either role. The break-even and timeline charts assume flat compensation with no raises in either scenario, for a clean apples-to-apples comparison. The career-growth &amp; quality-of-life index in section 6 is a structured subjective judgment (defaults sourced from sections 4–5), not an objective measurement.</p>
+    <p>Built for personal planning — not tax, legal, financial, or employment advice. Company research (sections 4, 5, and 8) reflects public information gathered September 5, 2026, and will age; actual vesting schedules, commission plan mechanics, and offer letter terms should always be confirmed against your own plan documents and direct conversations with each employer.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Theme ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+  var theme = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+
+  function iconFor(mode) {
+    return mode === 'dark'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  function applyTheme(mode) {
+    root.setAttribute('data-theme', mode);
+    toggle.innerHTML = iconFor(mode);
+    toggle.setAttribute('aria-label', 'Switch to ' + (mode === 'dark' ? 'light' : 'dark') + ' mode');
+    if (window.Chart) refreshChartTheme();
+  }
+  applyTheme(theme);
+  toggle.addEventListener('click', function () {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    applyTheme(theme);
+  });
+
+  /* ---------- Formatting helpers ---------- */
+  var usdFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  var usdFmtSigned = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0, signDisplay: 'exceptZero' });
+  function usd(n) { return usdFmt.format(Math.round(n)); }
+  function usdSigned(n) { return usdFmtSigned.format(Math.round(n)); }
+
+  /* ---------- Element refs ---------- */
+  var el = {
+    curBase: document.getElementById('curBase'),
+    curCommTarget: document.getElementById('curCommTarget'),
+    curQuota: document.getElementById('curQuota'),
+    curEquityAnnual: document.getElementById('curEquityAnnual'),
+    unvestedTotal: document.getElementById('unvestedTotal'),
+    cliffYears: document.getElementById('cliffYears'),
+    leaveMonths: document.getElementById('leaveMonths'),
+    newBase: document.getElementById('newBase'),
+    newCommPct: document.getElementById('newCommPct'),
+    newEquityAnnual: document.getElementById('newEquityAnnual'),
+    newQuota: document.getElementById('newQuota')
+  };
+  var vestModel = 'cliff';
+  var vestSegBtns = document.querySelectorAll('#vestModelSeg button');
+  vestSegBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      vestSegBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      vestModel = btn.getAttribute('data-value');
+      document.getElementById('vestModelHelp').textContent = vestModel === 'cliff'
+        ? "Cliff: you forfeit 100% of the unvested pool until the cliff date, then it vests in full. Toggle to Linear to model pro-rata monthly vesting instead."
+        : "Linear: the unvested pool vests in equal monthly installments across the cliff period, so leaving partway through means keeping a pro-rata share.";
+      render();
+    });
+  });
+
+  function readState() {
+    return {
+      curBase: parseFloat(el.curBase.value) || 0,
+      curCommTarget: parseFloat(el.curCommTarget.value) || 0,
+      curQuota: parseFloat(el.curQuota.value) || 0,
+      curEquityAnnual: parseFloat(el.curEquityAnnual.value) || 0,
+      unvestedTotal: parseFloat(el.unvestedTotal.value) || 0,
+      cliffYears: Math.max(0.25, parseFloat(el.cliffYears.value) || 0.25),
+      leaveMonths: parseFloat(el.leaveMonths.value) || 0,
+      newBase: parseFloat(el.newBase.value) || 0,
+      newCommPct: parseFloat(el.newCommPct.value) || 0,
+      newEquityAnnual: parseFloat(el.newEquityAnnual.value) || 0,
+      newQuota: parseFloat(el.newQuota.value) || 0
+    };
+  }
+
+  function compute(s) {
+    var commissionActualCur = s.curCommTarget * (s.curQuota / 100);
+    var tdcCur = s.curBase + commissionActualCur + s.curEquityAnnual;
+
+    var commTargetNew = s.newBase * (s.newCommPct / 100);
+    var commissionActualNew = commTargetNew * (s.newQuota / 100);
+    var tdcNew = s.newBase + commissionActualNew + s.newEquityAnnual;
+
+    var cliffMonths = s.cliffYears * 12;
+    var vestedFraction;
+    if (vestModel === 'cliff') {
+      vestedFraction = s.leaveMonths >= cliffMonths ? 1 : 0;
+    } else {
+      vestedFraction = Math.min(1, s.leaveMonths / cliffMonths);
+    }
+    var vestedAmt = s.unvestedTotal * vestedFraction;
+    var lostEquity = s.unvestedTotal - vestedAmt;
+
+    var delta = tdcNew - tdcCur;
+    var breakevenYears;
+    if (lostEquity <= 0) breakevenYears = 0;
+    else if (delta > 0) breakevenYears = lostEquity / delta;
+    else breakevenYears = Infinity;
+
+    return {
+      commissionActualCur: commissionActualCur, tdcCur: tdcCur,
+      commTargetNew: commTargetNew, commissionActualNew: commissionActualNew, tdcNew: tdcNew,
+      vestedAmt: vestedAmt, lostEquity: lostEquity, vestedFraction: vestedFraction,
+      delta: delta, breakevenYears: breakevenYears, cliffMonths: cliffMonths
+    };
+  }
+
+  /* ---------- Chart.js setup ---------- */
+  var charts = {};
+
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function baseFontColor() { return cssVar('--color-text-muted'); }
+  function gridColor() { return cssVar('--color-divider'); }
+
+  function commonScaleOpts() {
+    return {
+      ticks: { color: baseFontColor(), font: { family: "'Satoshi','Helvetica Neue',sans-serif", size: 11 } },
+      grid: { color: gridColor(), drawTicks: false }
+    };
+  }
+
+  function buildVestChart() {
+    var ctx = document.getElementById('vestChart').getContext('2d');
+    charts.vest = new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [
+        { label: 'Vested', data: [], borderColor: cssVar('--color-success'), backgroundColor: 'transparent', borderWidth: 2.5, tension: 0, stepped: false, pointRadius: 0, fill: false, order: 2 }
+      ]},
+      plugins: [{
+        id: 'exitMarker',
+        afterDatasetsDraw: function (chart) {
+          var mm = chart.markerMonth;
+          if (mm == null) return;
+          var idx = chart.data.labels.indexOf(mm);
+          if (idx === -1) return;
+          var xScale = chart.scales.x, yScale = chart.scales.y;
+          var xPos = xScale.getPixelForValue(idx);
+          var ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([5, 4]);
+          ctx2.lineWidth = 1.8;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-current').trim();
+          ctx2.moveTo(xPos, yScale.top);
+          ctx2.lineTo(xPos, yScale.bottom);
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      }],
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: function (items) { return items[0].label + ' months'; },
+              label: function (item) {
+                if (item.dataset.label === 'Marker') return null;
+                return 'Vested: ' + usd(item.parsed.y);
+              }
+            }
+          }
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Months from today', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usd(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function buildBreakevenChart() {
+    var ctx = document.getElementById('breakevenChart').getContext('2d');
+    charts.breakeven = new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [
+        {
+          label: 'Net advantage of new offer',
+          data: [], borderWidth: 2.5, pointRadius: 0, tension: 0, fill: { target: 'origin' },
+          segment: {
+            borderColor: function (c2) {
+              return (c2.p0.parsed.y < 0 || c2.p1.parsed.y < 0)
+                ? getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim()
+                : getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim();
+            },
+            backgroundColor: function (c2) {
+              var col = (c2.p0.parsed.y < 0 || c2.p1.parsed.y < 0) ? '--color-error' : '--color-success';
+              return 'color-mix(in oklab, ' + getComputedStyle(document.documentElement).getPropertyValue(col).trim() + ' 16%, transparent)';
+            }
+          }
+        }
+      ]},
+      plugins: [{
+        id: 'breakevenMarker',
+        afterDatasetsDraw: function (chart) {
+          var by = chart.breakevenYear;
+          if (by == null || !isFinite(by)) return;
+          var labels = chart.data.labels;
+          var maxLabel = labels[labels.length - 1];
+          if (by > maxLabel) return;
+          var xScale = chart.scales.x, yScale = chart.scales.y;
+          var lo = Math.floor(by), hi = Math.ceil(by);
+          var loIdx = labels.indexOf(lo), hiIdx = labels.indexOf(hi);
+          if (loIdx === -1 || hiIdx === -1) return;
+          var xLo = xScale.getPixelForValue(loIdx), xHi = xScale.getPixelForValue(hiIdx);
+          var frac = hi === lo ? 0 : (by - lo) / (hi - lo);
+          var xPos = xLo + (xHi - xLo) * frac;
+          var zeroY = yScale.getPixelForValue(0);
+          var ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([5, 4]);
+          ctx2.lineWidth = 1.8;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-current').trim();
+          ctx2.moveTo(xPos, yScale.top);
+          ctx2.lineTo(xPos, yScale.bottom);
+          ctx2.stroke();
+          ctx2.setLineDash([]);
+          ctx2.lineWidth = 1.5;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim();
+          ctx2.beginPath();
+          ctx2.moveTo(xScale.left, zeroY);
+          ctx2.lineTo(xScale.right, zeroY);
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      }],
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: {
+            title: function (items) { return 'Year ' + items[0].label; },
+            label: function (item) { return (item.parsed.y >= 0 ? 'Ahead by ' : 'Behind by ') + usd(Math.abs(item.parsed.y)); }
+          }}
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Years from today', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usdSigned(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function buildQuotaChart() {
+    var ctx = document.getElementById('quotaChart').getContext('2d');
+    charts.quota = new Chart(ctx, {
+      data: { labels: [], datasets: [
+        { type: 'bar', label: 'New offer TDC', data: [], backgroundColor: cssVar('--color-primary'), borderRadius: 5, maxBarThickness: 46 },
+        { type: 'line', label: 'Current TDC (proven)', data: [], borderColor: cssVar('--color-current'), borderWidth: 2.5, borderDash: [6,4], pointRadius: 0, fill: false }
+      ]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function (item) { return item.dataset.label + ': ' + usd(item.parsed.y); } } }
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Quota attainment', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usd(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function refreshChartTheme() {
+    if (!charts.vest) return;
+    [charts.vest, charts.breakeven, charts.quota].forEach(function (c) { c.destroy(); });
+    buildVestChart(); buildBreakevenChart(); buildQuotaChart();
+    render();
+  }
+
+  /* ---------- Render ---------- */
+  function render() {
+    var s = readState();
+    var c = compute(s);
+
+    // live labels next to inputs
+    document.getElementById('valCurBase').textContent = usd(s.curBase);
+    document.getElementById('valCurCommTarget').textContent = usd(s.curCommTarget);
+    document.getElementById('valCurQuota').textContent = s.curQuota + '%';
+    document.getElementById('valCurEquity').textContent = usd(s.curEquityAnnual);
+    document.getElementById('valUnvested').textContent = usd(s.unvestedTotal);
+    document.getElementById('valCliff').textContent = s.cliffYears.toFixed(2).replace(/\.00$/, '.0') + ' yrs';
+    document.getElementById('valNewBase').textContent = usd(s.newBase);
+    document.getElementById('valNewCommPct').textContent = s.newCommPct + '%';
+    document.getElementById('valNewCommTarget').textContent = usd(c.commTargetNew);
+    document.getElementById('valNewEquity').textContent = usd(s.newEquityAnnual);
+    document.getElementById('valNewQuota').textContent = s.newQuota + '%';
+    document.getElementById('valLeaveMonths').textContent = s.leaveMonths + ' mo';
+    document.getElementById('ctxUnvested').textContent = usd(s.unvestedTotal).replace('$', '');
+
+    document.getElementById('curTDCOut').textContent = usd(c.tdcCur);
+    document.getElementById('newTDCOut').textContent = usd(c.tdcNew);
+
+    // KPIs
+    document.getElementById('kpiCurTDC').textContent = usd(c.tdcCur);
+    document.getElementById('kpiNewTDC').textContent = usd(c.tdcNew);
+    document.getElementById('kpiLostEquity').textContent = usd(c.lostEquity);
+    document.getElementById('kpiLostEquitySub').textContent = s.leaveMonths === 0
+      ? 'If you leave today'
+      : 'If you leave in ' + s.leaveMonths + ' months';
+
+    var beCard = document.getElementById('kpiBreakevenCard');
+    var beEl = document.getElementById('kpiBreakeven');
+    beCard.classList.remove('good', 'bad');
+    if (c.lostEquity <= 0) { beEl.textContent = 'Immediate'; beCard.classList.add('good'); }
+    else if (!isFinite(c.breakevenYears)) { beEl.textContent = 'Never'; beCard.classList.add('bad'); }
+    else { beEl.textContent = c.breakevenYears.toFixed(1) + ' yrs'; beCard.classList.add(c.breakevenYears <= 3 ? 'good' : 'bad'); }
+
+    // slider max for leaveMonths tied to cliff
+    var newMax = Math.max(24, Math.round(c.cliffMonths * 1.5));
+    if (parseInt(el.leaveMonths.max, 10) !== newMax) {
+      el.leaveMonths.max = newMax;
+      if (s.leaveMonths > newMax) { el.leaveMonths.value = newMax; s = readState(); c = compute(s); }
+    }
+
+    /* --- Chart 1: vesting curve --- */
+    var maxMonth = Math.max(24, Math.round(c.cliffMonths * 1.5));
+    var vestLabels = [], vestData = [];
+    for (var m = 0; m <= maxMonth; m += 1) {
+      var frac = vestModel === 'cliff' ? (m >= c.cliffMonths ? 1 : 0) : Math.min(1, m / c.cliffMonths);
+      vestLabels.push(m);
+      vestData.push(s.unvestedTotal * frac);
+    }
+    charts.vest.data.labels = vestLabels;
+    charts.vest.data.datasets[0].data = vestData;
+    charts.vest.markerMonth = s.leaveMonths;
+    charts.vest.update();
+
+    var vestCalloutTitle = document.getElementById('vestCalloutTitle');
+    var vestCalloutBody = document.getElementById('vestCalloutBody');
+    vestCalloutTitle.textContent = c.lostEquity > 0
+      ? 'Leaving in ' + s.leaveMonths + ' months forfeits ' + usd(c.lostEquity)
+      : 'Leaving in ' + s.leaveMonths + ' months forfeits nothing';
+    if (c.lostEquity <= 0) {
+      vestCalloutBody.textContent = 'You would have cleared the ' + s.cliffYears + '-year cliff and kept the full unvested pool.';
+    } else if (vestModel === 'cliff') {
+      vestCalloutBody.textContent = 'Under a cliff model, you keep $0 until month ' + Math.round(c.cliffMonths) + ', then the full ' + usd(s.unvestedTotal) + ' vests at once.';
+    } else {
+      vestCalloutBody.textContent = 'Under linear vesting, you have kept ' + usd(c.vestedAmt) + ' (' + Math.round(c.vestedFraction * 100) + '%) and would forfeit the remaining ' + usd(c.lostEquity) + '.';
+    }
+
+    /* --- Chart 2: breakeven timeline --- */
+    var horizonYears = 6;
+    if (isFinite(c.breakevenYears)) horizonYears = Math.min(40, Math.max(6, Math.ceil(c.breakevenYears) + 2));
+    var beLabels = [], netData = [];
+    for (var y = 0; y <= horizonYears; y += 1) {
+      beLabels.push(y);
+      netData.push((c.tdcNew * y - c.lostEquity) - (c.tdcCur * y));
+    }
+    charts.breakeven.data.labels = beLabels;
+    charts.breakeven.data.datasets[0].data = netData;
+    charts.breakeven.breakevenYear = (c.lostEquity > 0 && isFinite(c.breakevenYears)) ? c.breakevenYears : null;
+    charts.breakeven.update();
+
+    var beTitle = document.getElementById('breakevenTitle');
+    var beBody = document.getElementById('breakevenBody');
+    var beCallout = document.getElementById('breakevenCallout');
+    beCallout.classList.remove('good', 'bad', 'warn');
+    if (c.lostEquity <= 0) {
+      beCallout.classList.add('good');
+      beTitle.textContent = 'No equity at risk';
+      beBody.textContent = 'At ' + s.leaveMonths + ' months you’ve already cleared the cliff, so the new offer just needs to beat your current TDC year over year (' + usdSigned(c.delta) + '/yr).';
+    } else if (!isFinite(c.breakevenYears)) {
+      beCallout.classList.add('bad');
+      beTitle.textContent = 'This offer never breaks even';
+      beBody.textContent = 'New offer TDC (' + usd(c.tdcNew) + ') is at or below your current TDC (' + usd(c.tdcCur) + '), so the ' + usd(c.lostEquity) + ' you’d forfeit is never recovered by higher pay alone — it would need a richer offer or a longer stay before you leave.';
+    } else {
+      beCallout.classList.add(c.breakevenYears <= 2 ? 'good' : 'warn');
+      beTitle.textContent = 'Break-even at year ' + c.breakevenYears.toFixed(1);
+      beBody.textContent = 'The new offer pays ' + usdSigned(c.delta) + '/yr more than your current TDC, which recovers the ' + usd(c.lostEquity) + ' forfeited equity in about ' + c.breakevenYears.toFixed(1) + ' years.';
+    }
+
+    /* --- Chart 3: quota comparison --- */
+    var attainments = [50, 70, 100, 110, 130, 165, 200];
+    var quotaLabels = attainments.map(function (a) { return a + '%'; });
+    var newTDCByAttainment = attainments.map(function (a) {
+      return s.newBase + c.commTargetNew * (a / 100) + s.newEquityAnnual;
+    });
+    var curLine = attainments.map(function () { return c.tdcCur; });
+    charts.quota.data.labels = quotaLabels;
+    charts.quota.data.datasets[0].data = newTDCByAttainment;
+    charts.quota.data.datasets[0].label = 'New offer TDC';
+    charts.quota.data.datasets[1].data = curLine;
+    charts.quota.data.datasets[1].label = 'Current TDC (proven @' + s.curQuota + '%)';
+    // highlight the bar matching the user's current quota color-wise
+    charts.quota.data.datasets[0].backgroundColor = attainments.map(function (a) {
+      return a === s.newQuota ? cssVar('--color-primary-hover') : cssVar('--color-primary');
+    });
+    charts.quota.update();
+
+    renderVerdict(s, c);
+  }
+
+  /* ---------- NEW: career growth & quality-of-life scorecard ---------- */
+  var DIMENSIONS = [
+    {
+      id: 'growth', label: 'Career growth & promotion velocity',
+      help: 'Internal mobility, promotion pace, skill development.',
+      cur: 6, sq: 4,
+      curSrc: 'DoorDash: promotions described as manager-dependent; some reviews flag them as "harder to come by" lately (Blind).',
+      sqSrc: 'Square/Block: weakest sub-score company-wide — Glassdoor "career opportunities" 3.1/5, Blind career-growth 3.4/5.'
+    },
+    {
+      id: 'wlb', label: 'Work-life balance & management quality',
+      help: 'Hours, manager quality, day-to-day stress.',
+      cur: 6, sq: 7,
+      curSrc: 'DoorDash: highly team/manager-dependent; no mandatory return-to-office policy found.',
+      sqSrc: 'Square/Block: Blind’s highest sub-score (4.3/5) — but "rolling layoffs and re-orgs" is the most-cited stressor.'
+    },
+    {
+      id: 'stability', label: 'Job security & reorg risk',
+      help: 'Layoff history and headcount trend.',
+      cur: 8, sq: 3,
+      curSrc: 'DoorDash: no confirmed layoffs 2025–26; headcount +22.8% (2023→2024); two 2025 acquisitions.',
+      sqSrc: 'Square/Block: two rounds of cuts in 12 months — ~8% (Mar 2025), up to ~10% (Feb 2026).'
+    },
+    {
+      id: 'financial', label: 'Company financial trajectory',
+      help: 'Revenue/profit growth, stock momentum, analyst sentiment.',
+      cur: 7, sq: 6,
+      curSrc: 'DoorDash: revenue/EBITDA growing strongly, but GAAP profit fell and the stock is ~40%+ off its 2026 high.',
+      sqSrc: 'Square/Block: FY26 guidance raised across the board, but trailing stock return (~11%) lags DASH and swings ~1.8x.'
+    },
+    {
+      id: 'comp', label: 'Compensation structure & upside',
+      help: 'Pay mix, quota/OTE realism, equity volatility.',
+      cur: 7, sq: 6,
+      curSrc: 'DoorDash: your 165% attainment is proven; front-loaded vesting means later-year comp leans on performance refreshers.',
+      sqSrc: 'Square/Block: higher variable-comp share of OTE for AEs; new-role ramp risk with no track record yet.'
+    },
+    {
+      id: 'scope', label: 'Role scope & personal interest (fintech vs. delivery)',
+      help: 'This one is entirely yours to weight — no public research substitutes for what excites you day to day.',
+      cur: 5, sq: 5,
+      curSrc: 'Neutral default — adjust based on your own interest in the DoorDash / logistics domain.',
+      sqSrc: 'Neutral default — adjust based on your own interest in fintech / Cash App / Bitcoin.'
+    }
+  ];
+
+  var lastScorecard = null;
+
+  function buildDimensions() {
+    var wrap = document.getElementById('dimContainer');
+    if (!wrap) return;
+    wrap.innerHTML = DIMENSIONS.map(function (d) {
+      return '' +
+        '<div class="dim-card" data-dim="' + d.id + '">' +
+          '<div class="dim-head">' +
+            '<div><h4>' + d.label + '</h4><p>' + d.help + '</p></div>' +
+            '<div class="dim-weight"><label>Weight <span class="val tabular" id="w-' + d.id + '-val">2</span></label>' +
+            '<input type="range" min="0" max="3" step="1" value="2" id="w-' + d.id + '" data-testid="slider-weight-' + d.id + '" /></div>' +
+          '</div>' +
+          '<div class="dim-sliders">' +
+            '<div class="dim-slider">' +
+              '<label><span class="name"><i style="background:var(--color-current)"></i>DoorDash</span><span class="val tabular" id="cur-' + d.id + '-val">' + d.cur + '</span></label>' +
+              '<input type="range" min="1" max="10" step="1" value="' + d.cur + '" id="cur-' + d.id + '" data-testid="slider-cur-' + d.id + '" />' +
+              '<p class="help">' + d.curSrc + '</p>' +
+            '</div>' +
+            '<div class="dim-slider">' +
+              '<label><span class="name"><i style="background:var(--color-primary)"></i>Square</span><span class="val tabular" id="sq-' + d.id + '-val">' + d.sq + '</span></label>' +
+              '<input type="range" min="1" max="10" step="1" value="' + d.sq + '" id="sq-' + d.id + '" data-testid="slider-sq-' + d.id + '" />' +
+              '<p class="help">' + d.sqSrc + '</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    wrap.addEventListener('input', renderScorecard);
+  }
+
+  function computeScorecard() {
+    var totalW = 0, curScore = 0, sqScore = 0;
+    DIMENSIONS.forEach(function (d) {
+      var w = parseFloat(document.getElementById('w-' + d.id).value);
+      var cv = parseFloat(document.getElementById('cur-' + d.id).value);
+      var sv = parseFloat(document.getElementById('sq-' + d.id).value);
+      document.getElementById('w-' + d.id + '-val').textContent = w;
+      document.getElementById('cur-' + d.id + '-val').textContent = cv;
+      document.getElementById('sq-' + d.id + '-val').textContent = sv;
+      totalW += w;
+      curScore += w * cv;
+      sqScore += w * sv;
+    });
+    var curIdx = totalW > 0 ? (curScore / (totalW * 10)) * 100 : 0;
+    var sqIdx = totalW > 0 ? (sqScore / (totalW * 10)) * 100 : 0;
+    return { curIdx: curIdx, sqIdx: sqIdx, totalW: totalW };
+  }
+
+  function renderScorecard() {
+    var r = computeScorecard();
+    document.getElementById('curScoreVal').textContent = r.curIdx.toFixed(0);
+    document.getElementById('sqScoreVal').textContent = r.sqIdx.toFixed(0);
+    document.getElementById('curScoreBar').style.width = r.curIdx + '%';
+    document.getElementById('sqScoreBar').style.width = r.sqIdx + '%';
+    lastScorecard = r;
+    var s = readState();
+    renderVerdict(s, compute(s));
+  }
+
+  function buildTension(c, sc) {
+    var financialFavorsNew = c.delta > 0 && isFinite(c.breakevenYears) && c.breakevenYears <= 3;
+    var qualityFavorsNew = sc.sqIdx > sc.curIdx + 3;
+    var qualityFavorsCur = sc.curIdx > sc.sqIdx + 3;
+    if (financialFavorsNew && qualityFavorsNew) return 'Both the financial model and your weighted quality index favor the move — about as strong a case for going as this tool can build.';
+    if (!financialFavorsNew && qualityFavorsCur) return 'Both the financial model and your weighted quality index favor staying — at least until the offer improves or your priorities shift.';
+    return 'The financial model and your quality-of-life index are pulling in different directions here — this is a genuine trade-off, not a clean answer. Adjust the weight sliders in section 6 to see how sensitive the call is to what you value most.';
+  }
+
+  function renderVerdict(s, c) {
+    var vF = document.getElementById('vFinancial');
+    var vQ = document.getElementById('vQuality');
+    var vT = document.getElementById('vTension');
+    if (!vF || !vQ || !vT) return;
+
+    vF.textContent = c.lostEquity <= 0
+      ? ('No equity at risk at this exit timing — the new offer just needs to beat your current ' + usd(c.tdcCur) + '/yr TDC.')
+      : (!isFinite(c.breakevenYears)
+          ? ('As entered, the Square offer never recovers the ' + usd(c.lostEquity) + ' in forfeited equity through pay alone.')
+          : ('Break-even in ' + c.breakevenYears.toFixed(1) + ' years, recovering ' + usd(c.lostEquity) + ' in forfeited equity at ' + usdSigned(c.delta) + '/yr.'));
+
+    if (lastScorecard) {
+      var diff = lastScorecard.sqIdx - lastScorecard.curIdx;
+      vQ.textContent = (diff > 3 ? 'Square scores higher' : diff < -3 ? 'DoorDash scores higher' : 'It’s roughly a wash')
+        + ' on your weighted career-growth & quality-of-life index (DoorDash ' + lastScorecard.curIdx.toFixed(0) + ' vs. Square ' + lastScorecard.sqIdx.toFixed(0) + ' of 100).';
+      vT.textContent = buildTension(c, lastScorecard);
+    } else {
+      vQ.textContent = 'Set your weights in section 6 to see how the qualitative side compares.';
+      vT.textContent = 'Once section 6 is scored, this compares it against the financial read on the left.';
+    }
+  }
+
+  /* ---------- Wire up events ---------- */
+  Object.keys(el).forEach(function (key) {
+    el[key].addEventListener('input', render);
+  });
+
+  /* ---------- Boot ---------- */
+  function boot() {
+    buildVestChart();
+    buildBreakevenChart();
+    buildQuotaChart();
+    buildDimensions();
+    render();
+    renderScorecard();
+  }
+  if (window.Chart) boot();
+  else window.addEventListener('DOMContentLoaded', function () {
+    var tries = 0;
+    (function wait() {
+      if (window.Chart) return boot();
+      if (tries++ > 100) return;
+      setTimeout(wait, 50);
+    })();
+  });
+})();
+</script>
+</body>
+</html>
