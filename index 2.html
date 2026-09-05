@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Offer Calc" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#0B1116" />
+<title>Job Offer &amp; Equity Calculator</title>
+<meta name="description" content="Model the lost value of unvested equity, break-even timeline, and quota-performance risk when comparing a current package to a new job offer." />
+
+<!-- Fontshare: General Sans (display) + Satoshi (body) -->
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+<!-- Google Fonts: JetBrains Mono (numeric data) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%230E7C86'/%3E%3Cpath d='M8 30 L20 24 L20 30 L32 16 L40 10' stroke='white' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+
+<style>
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+:root, [data-theme="light"] {
+  --color-bg: #F3F6F8;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F8FAFB;
+  --color-surface-offset: #ECF1F4;
+  --color-divider: #E2E8EC;
+  --color-border: #D6DEE4;
+
+  --color-text: #10171D;
+  --color-text-muted: #566472;
+  --color-text-faint: #9AA9B3;
+  --color-text-inverse: #F5F8F9;
+
+  --color-primary: #0E7C86;
+  --color-primary-hover: #0A5F67;
+  --color-primary-active: #084B51;
+  --color-primary-highlight: #D3EBEC;
+
+  --color-current: #3A5AA6;
+  --color-current-highlight: #DCE4F3;
+
+  --color-warning: #C2540A;
+  --color-warning-hover: #A0450A;
+  --color-warning-highlight: #F5E1CE;
+
+  --color-error: #AF2A55;
+  --color-error-highlight: #F2D6E0;
+
+  --color-success: #2E7D46;
+  --color-success-highlight: #D8EBDC;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 23, 29, 0.05);
+  --shadow-md: 0 6px 16px rgba(16, 23, 29, 0.07);
+  --shadow-lg: 0 16px 36px rgba(16, 23, 29, 0.10);
+
+  --transition-interactive: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0B1116;
+  --color-surface: #121A21;
+  --color-surface-2: #16202A;
+  --color-surface-offset: #1B2732;
+  --color-divider: #202D38;
+  --color-border: #29394678;
+
+  --color-text: #DCE5EA;
+  --color-text-muted: #8DA0AC;
+  --color-text-faint: #5B6C78;
+  --color-text-inverse: #0B1116;
+
+  --color-primary: #4FB9C4;
+  --color-primary-hover: #74CBD4;
+  --color-primary-active: #93D8DF;
+  --color-primary-highlight: #17333A;
+
+  --color-current: #7C97DA;
+  --color-current-highlight: #1E2A45;
+
+  --color-warning: #E28C4B;
+  --color-warning-hover: #EAA36D;
+  --color-warning-highlight: #3A2A19;
+
+  --color-error: #E06E92;
+  --color-error-highlight: #3A2130;
+
+  --color-success: #6FC489;
+  --color-success-highlight: #1B3324;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+:root {
+  --font-display: 'General Sans', 'Helvetica Neue', sans-serif;
+  --font-body: 'Satoshi', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.84rem + 0.2vw, 0.9375rem);
+  --text-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  --text-lg: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+  --text-xl: clamp(1.375rem, 1.15rem + 1vw, 1.875rem);
+
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+  --space-12: 3rem; --space-16: 4rem; --space-20: 5rem;
+}
+
+/* =========================================================
+   BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.55;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+img, svg { display: block; max-width: 100%; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+a, button, [role="button"], input, select {
+  transition: color var(--transition-interactive), background var(--transition-interactive),
+    border-color var(--transition-interactive), box-shadow var(--transition-interactive),
+    transform var(--transition-interactive);
+}
+
+.tabular { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--space-4); }
+
+header.topbar {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in oklab, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-divider);
+}
+.topbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) var(--space-4);
+  max-width: 1180px; margin: 0 auto;
+  gap: var(--space-3);
+}
+.brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-current));
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.brand-mark svg { width: 20px; height: 20px; }
+.brand-text { min-width: 0; }
+.brand-text h1 {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-base);
+  line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.brand-text p {
+  font-size: var(--text-xs); color: var(--color-text-muted); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: var(--radius-full);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--color-border); color: var(--color-text-muted); flex-shrink: 0;
+}
+.theme-toggle:hover { color: var(--color-text); border-color: var(--color-text-faint); }
+.theme-toggle svg { width: 17px; height: 17px; }
+
+main { padding: var(--space-6) 0 var(--space-16); }
+
+.hero { padding: var(--space-2) 0 var(--space-6); }
+.hero h2 {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-xl);
+  letter-spacing: -0.01em;
+}
+.hero p { color: var(--color-text-muted); margin-top: var(--space-2); max-width: 62ch; font-size: var(--text-sm); }
+
+.grid-inputs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 780px) { .grid-inputs { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+.card + .card { margin-top: var(--space-5); }
+
+.card-head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-4); }
+.card-dot { width: 9px; height: 9px; border-radius: var(--radius-full); flex-shrink: 0; }
+.card-dot.current { background: var(--color-current); }
+.card-dot.offer { background: var(--color-primary); }
+.card-head h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); }
+.card-head .tag {
+  margin-left: auto; font-size: var(--text-xs); color: var(--color-text-muted);
+  background: var(--color-surface-offset); padding: 2px var(--space-2); border-radius: var(--radius-full);
+}
+
+.field { margin-bottom: var(--space-4); }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-2);
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0.02em;
+}
+.field label .val { font-family: var(--font-mono); color: var(--color-text); font-size: var(--text-sm); text-transform: none; letter-spacing: 0; }
+.input-shell {
+  position: relative; display: flex; align-items: center;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface-2); overflow: hidden;
+}
+.input-shell:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-highlight); }
+.input-shell .prefix, .input-shell .suffix {
+  padding: 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-faint); flex-shrink: 0;
+}
+.input-shell input[type="number"] {
+  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+  padding: var(--space-3) var(--space-2); font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--color-text);
+}
+.input-shell select {
+  flex: 1; background: transparent; border: none; outline: none; padding: var(--space-3);
+  font-size: var(--text-sm); appearance: none;
+}
+.select-shell { position: relative; }
+.select-shell::after {
+  content: ""; position: absolute; right: var(--space-3); top: 50%; width: 8px; height: 8px;
+  border-right: 1.6px solid var(--color-text-faint); border-bottom: 1.6px solid var(--color-text-faint);
+  transform: translateY(-65%) rotate(45deg); pointer-events: none;
+}
+
+input[type="range"] {
+  width: 100%; height: 28px; background: transparent; -webkit-appearance: none; appearance: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px; border-radius: var(--radius-full); background: var(--color-surface-offset);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--color-primary); border: 3px solid var(--color-surface);
+  box-shadow: var(--shadow-sm); margin-top: -8px; cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 5px; border-radius: var(--radius-full); background: var(--color-surface-offset); }
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--color-primary);
+  border: 3px solid var(--color-surface); cursor: pointer;
+}
+
+.help { font-size: var(--text-xs); color: var(--color-text-faint); margin-top: var(--space-2); line-height: 1.4; }
+
+.seg {
+  display: flex; background: var(--color-surface-offset); border-radius: var(--radius-md);
+  padding: 3px; gap: 3px;
+}
+.seg button {
+  flex: 1; padding: var(--space-2) var(--space-3); border-radius: calc(var(--radius-md) - 3px);
+  font-size: var(--text-xs); font-weight: 600; color: var(--color-text-muted); text-align: center;
+}
+.seg button.active { background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-sm); }
+
+.subtotal-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: var(--space-4); margin-top: var(--space-4); border-top: 1px dashed var(--color-divider);
+}
+.subtotal-row .lbl { font-size: var(--text-sm); color: var(--color-text-muted); }
+.subtotal-row .amt { font-family: var(--font-mono); font-size: var(--text-lg); font-weight: 700; }
+
+/* KPI row */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+@media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.kpi::before {
+  content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--bar, var(--color-primary));
+}
+.kpi .label { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 500; }
+.kpi .value { font-family: var(--font-mono); font-size: var(--text-xl); font-weight: 700; margin-top: var(--space-2); line-height: 1.1; }
+.kpi .sub { font-size: var(--text-xs); color: var(--color-text-faint); margin-top: var(--space-2); }
+.kpi.warn { --bar: var(--color-warning); }
+.kpi.warn .value { color: var(--color-warning); }
+.kpi.good { --bar: var(--color-success); }
+.kpi.good .value { color: var(--color-success); }
+.kpi.bad .value { color: var(--color-error); }
+.kpi.bad { --bar: var(--color-error); }
+
+.section {
+  background: var(--color-surface); border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+.section-head { margin-bottom: var(--space-4); }
+.section-head h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); }
+.section-head p { color: var(--color-text-muted); font-size: var(--text-sm); margin-top: var(--space-1); }
+
+.chart-box { position: relative; height: 280px; margin-top: var(--space-4); }
+.chart-box.tall { height: 320px; }
+
+.callout {
+  margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius-md);
+  background: var(--color-surface-offset); border: 1px solid var(--color-divider);
+  font-size: var(--text-sm); display: flex; gap: var(--space-3); align-items: flex-start;
+}
+.callout.good { background: var(--color-success-highlight); border-color: color-mix(in oklab, var(--color-success) 35%, var(--color-divider)); }
+.callout.bad { background: var(--color-error-highlight); border-color: color-mix(in oklab, var(--color-error) 35%, var(--color-divider)); }
+.callout.warn { background: var(--color-warning-highlight); border-color: color-mix(in oklab, var(--color-warning) 35%, var(--color-divider)); }
+.callout strong { display: block; margin-bottom: 2px; font-family: var(--font-display); }
+.callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+
+.legend-row { display: flex; gap: var(--space-5); flex-wrap: wrap; font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-3); }
+.legend-row span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.legend-row i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+.mini-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+
+footer {
+  border-top: 1px solid var(--color-divider); padding: var(--space-8) 0; margin-top: var(--space-8);
+}
+footer p { font-size: var(--text-xs); color: var(--color-text-faint); line-height: 1.6; max-width: 74ch; }
+footer p + p { margin-top: var(--space-2); }
+
+@media (max-width: 640px) {
+  .hero h2 { font-size: var(--text-lg); }
+  .card, .section { padding: var(--space-4); }
+  .chart-box { height: 240px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M8 32 L19 26 L19 32 L31 17 L40 11" stroke="white" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Offer &amp; Equity Calculator</h1>
+        <p>Current package vs. new offer</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch to light mode" data-testid="button-theme-toggle"></button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h2>Should you take the offer?</h2>
+    <p>Enter your current DoorDash package and the terms of a new offer. This models the equity you'd forfeit by leaving, how long the new offer needs to make that back, and what your commission upside looks like if the new role's quota attainment doesn't match your current pace.</p>
+  </section>
+
+  <div class="grid-inputs">
+    <!-- CURRENT PACKAGE -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-dot current"></span>
+        <h3>Current package — DoorDash</h3>
+        <span class="tag">Today</span>
+      </div>
+
+      <div class="field">
+        <label>Base salary <span class="val tabular" id="valCurBase">$121,789</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curBase" value="121789" step="500" inputmode="decimal" data-testid="input-current-base" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Commission target (100% quota) <span class="val tabular" id="valCurCommTarget">$52,200</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curCommTarget" value="52200" step="100" inputmode="decimal" data-testid="input-current-commission-target" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Current quota attainment <span class="val tabular" id="valCurQuota">165%</span></label>
+        <input type="range" id="curQuota" min="50" max="220" step="1" value="165" data-testid="slider-current-quota" />
+        <p class="help">Your trailing performance — used to calculate the commission you're actually earning today, not just target.</p>
+      </div>
+
+      <div class="field">
+        <label>Equity grant, annual vest value <span class="val tabular" id="valCurEquity">$38,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="curEquityAnnual" value="38000" step="500" inputmode="decimal" data-testid="input-current-equity" />
+        </div>
+        <p class="help">The equity component of TDC — the annual value of shares vesting this year.</p>
+      </div>
+
+      <div class="subtotal-row">
+        <span class="lbl">Actual total comp (at current quota)</span>
+        <span class="amt tabular" id="curTDCOut">$0</span>
+      </div>
+
+      <div class="field" style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider);">
+        <label>Total unvested equity <span class="val tabular" id="valUnvested">$130,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="unvestedTotal" value="130000" step="1000" inputmode="decimal" data-testid="input-unvested-total" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Vesting cliff remaining <span class="val tabular" id="valCliff">2.0 yrs</span></label>
+        <div class="input-shell">
+          <input type="number" id="cliffYears" value="2" step="0.25" min="0.25" inputmode="decimal" data-testid="input-cliff-years" />
+          <span class="suffix">years</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Vesting model</label>
+        <div class="seg" id="vestModelSeg" data-testid="seg-vesting-model">
+          <button data-value="cliff" class="active" type="button">Cliff (all-or-nothing)</button>
+          <button data-value="linear" type="button">Linear (pro-rata monthly)</button>
+        </div>
+        <p class="help" id="vestModelHelp">Cliff: you forfeit 100% of the unvested pool until the cliff date, then it vests in full. Toggle to Linear to model pro-rata monthly vesting instead.</p>
+      </div>
+    </div>
+
+    <!-- NEW OFFER -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-dot offer"></span>
+        <h3>New offer</h3>
+        <span class="tag">Prospective</span>
+      </div>
+
+      <div class="field">
+        <label>Base salary <span class="val tabular" id="valNewBase">$140,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="newBase" value="140000" step="500" inputmode="decimal" data-testid="input-new-base" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Target commission, % of base <span class="val tabular" id="valNewCommPct">45%</span></label>
+        <input type="range" id="newCommPct" min="0" max="100" step="1" value="45" data-testid="slider-new-commission-pct" />
+        <p class="help">On-target commission at 100% quota: <span class="tabular" id="valNewCommTarget">$63,000</span></p>
+      </div>
+
+      <div class="field">
+        <label>New equity grant, annual vest value <span class="val tabular" id="valNewEquity">$45,000</span></label>
+        <div class="input-shell">
+          <span class="prefix">$</span>
+          <input type="number" id="newEquityAnnual" value="45000" step="500" inputmode="decimal" data-testid="input-new-equity" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Assumed quota attainment, new role <span class="val tabular" id="valNewQuota">110%</span></label>
+        <input type="range" id="newQuota" min="30" max="220" step="1" value="110" data-testid="slider-new-quota" />
+        <p class="help">Unlike your current role, you have no track record here yet — this is your best estimate. Drag to stress-test optimistic and conservative cases.</p>
+      </div>
+
+      <div class="subtotal-row">
+        <span class="lbl">Actual total comp (at assumed quota)</span>
+        <span class="amt tabular" id="newTDCOut">$0</span>
+      </div>
+
+      <div class="field" style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-divider);">
+        <label>Months from today until you'd give notice <span class="val tabular" id="valLeaveMonths">0 mo</span></label>
+        <input type="range" id="leaveMonths" min="0" max="36" step="1" value="0" data-testid="slider-leave-months" />
+        <p class="help">Drag forward in time to see how much of your unvested equity you'd keep the longer you stay before leaving.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="label">Current actual TDC</div>
+      <div class="value tabular" id="kpiCurTDC">$0</div>
+      <div class="sub">Base + commission + equity, today</div>
+    </div>
+    <div class="kpi">
+      <div class="label">New offer actual TDC</div>
+      <div class="value tabular" id="kpiNewTDC">$0</div>
+      <div class="sub">At your assumed quota attainment</div>
+    </div>
+    <div class="kpi warn">
+      <div class="label">Equity you'd forfeit</div>
+      <div class="value tabular" id="kpiLostEquity">$0</div>
+      <div class="sub" id="kpiLostEquitySub">If you leave today</div>
+    </div>
+    <div class="kpi" id="kpiBreakevenCard">
+      <div class="label">Break-even timeline</div>
+      <div class="value tabular" id="kpiBreakeven">—</div>
+      <div class="sub">Years for the new offer to recover the loss</div>
+    </div>
+  </div>
+
+  <!-- CHART 1: VESTING -->
+  <div class="section">
+    <div class="section-head">
+      <h3>1. The cost of leaving before you vest</h3>
+      <p>What you'd keep vs. forfeit from your $<span class="tabular" id="ctxUnvested">130,000</span> unvested pool, based on when you give notice.</p>
+    </div>
+    <div class="chart-box"><canvas id="vestChart" data-testid="chart-vesting"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-success)"></i>Vested (keeps)</span>
+      <span><i style="background:var(--color-warning)"></i>Forfeited (loses)</span>
+      <span><i style="background:var(--color-current)"></i>Your selected exit month</span>
+    </div>
+    <div class="callout warn" id="vestCallout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <div><strong id="vestCalloutTitle">Leaving today forfeits $130,000</strong><span id="vestCalloutBody">None of your unvested pool has cleared the cliff yet.</span></div>
+    </div>
+  </div>
+
+  <!-- CHART 2: BREAKEVEN -->
+  <div class="section">
+    <div class="section-head">
+      <h3>2. Break-even timeline for the new offer</h3>
+      <p>Cumulative earnings of the new offer minus staying, netting out the equity you'd forfeit on day one. Below zero means you're still behind; the line crosses zero at your break-even year.</p>
+    </div>
+    <div class="chart-box tall"><canvas id="breakevenChart" data-testid="chart-breakeven"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-error)"></i>Still behind (net negative)</span>
+      <span><i style="background:var(--color-success)"></i>Ahead of staying (net positive)</span>
+      <span><i style="background:var(--color-current)"></i>Break-even year</span>
+    </div>
+    <div class="callout" id="breakevenCallout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 8l-5 5-4-4-4 4"/></svg>
+      <div><strong id="breakevenTitle">—</strong><span id="breakevenBody">—</span></div>
+    </div>
+  </div>
+
+  <!-- CHART 3: QUOTA RISK -->
+  <div class="section">
+    <div class="section-head">
+      <h3>3. Quota performance: proven upside vs. new-role uncertainty</h3>
+      <p>Your 165%-style attainment is a track record with this quota; the new role has no track record yet. This shows new-offer TDC across a range of possible outcomes.</p>
+    </div>
+    <div class="chart-box"><canvas id="quotaChart" data-testid="chart-quota"></canvas></div>
+    <div class="legend-row">
+      <span><i style="background:var(--color-primary)"></i>New offer TDC at each attainment level</span>
+      <span><i style="background:var(--color-current)"></i>Your current TDC, proven</span>
+    </div>
+    <div class="callout warn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>
+      <div><strong>New-role ramp risk</strong><span>Most reps run below 100% attainment through a ramp period in a new role. Compare the bars at lower attainment levels (50-80%) against your proven current TDC to see the realistic downside — not just the optimistic case.</span></div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong style="color:var(--color-text)">Assumptions:</strong> Commission scales linearly with quota attainment (no accelerators, caps, or decelerators modeled). Equity figures are annual vest values you enter directly, not total grant size. "Forfeited equity" only reflects the unvested pool entered above — it excludes any new equity you'd earn going forward in either role. The break-even and timeline charts assume flat compensation with no raises in either scenario, for a clean apples-to-apples comparison.</p>
+    <p>Built for personal planning — not tax, legal, or financial advice. Actual vesting schedules, commission plan mechanics, and offer letter terms should always be confirmed against your own plan documents.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Theme ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+  var theme = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+
+  function iconFor(mode) {
+    return mode === 'dark'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  function applyTheme(mode) {
+    root.setAttribute('data-theme', mode);
+    toggle.innerHTML = iconFor(mode);
+    toggle.setAttribute('aria-label', 'Switch to ' + (mode === 'dark' ? 'light' : 'dark') + ' mode');
+    if (window.Chart) refreshChartTheme();
+  }
+  applyTheme(theme);
+  toggle.addEventListener('click', function () {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    applyTheme(theme);
+  });
+
+  /* ---------- Formatting helpers ---------- */
+  var usdFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  var usdFmtSigned = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0, signDisplay: 'exceptZero' });
+  function usd(n) { return usdFmt.format(Math.round(n)); }
+  function usdSigned(n) { return usdFmtSigned.format(Math.round(n)); }
+
+  /* ---------- Element refs ---------- */
+  var el = {
+    curBase: document.getElementById('curBase'),
+    curCommTarget: document.getElementById('curCommTarget'),
+    curQuota: document.getElementById('curQuota'),
+    curEquityAnnual: document.getElementById('curEquityAnnual'),
+    unvestedTotal: document.getElementById('unvestedTotal'),
+    cliffYears: document.getElementById('cliffYears'),
+    leaveMonths: document.getElementById('leaveMonths'),
+    newBase: document.getElementById('newBase'),
+    newCommPct: document.getElementById('newCommPct'),
+    newEquityAnnual: document.getElementById('newEquityAnnual'),
+    newQuota: document.getElementById('newQuota')
+  };
+  var vestModel = 'cliff';
+  var vestSegBtns = document.querySelectorAll('#vestModelSeg button');
+  vestSegBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      vestSegBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      vestModel = btn.getAttribute('data-value');
+      document.getElementById('vestModelHelp').textContent = vestModel === 'cliff'
+        ? "Cliff: you forfeit 100% of the unvested pool until the cliff date, then it vests in full. Toggle to Linear to model pro-rata monthly vesting instead."
+        : "Linear: the unvested pool vests in equal monthly installments across the cliff period, so leaving partway through means keeping a pro-rata share.";
+      render();
+    });
+  });
+
+  function readState() {
+    return {
+      curBase: parseFloat(el.curBase.value) || 0,
+      curCommTarget: parseFloat(el.curCommTarget.value) || 0,
+      curQuota: parseFloat(el.curQuota.value) || 0,
+      curEquityAnnual: parseFloat(el.curEquityAnnual.value) || 0,
+      unvestedTotal: parseFloat(el.unvestedTotal.value) || 0,
+      cliffYears: Math.max(0.25, parseFloat(el.cliffYears.value) || 0.25),
+      leaveMonths: parseFloat(el.leaveMonths.value) || 0,
+      newBase: parseFloat(el.newBase.value) || 0,
+      newCommPct: parseFloat(el.newCommPct.value) || 0,
+      newEquityAnnual: parseFloat(el.newEquityAnnual.value) || 0,
+      newQuota: parseFloat(el.newQuota.value) || 0
+    };
+  }
+
+  function compute(s) {
+    var commissionActualCur = s.curCommTarget * (s.curQuota / 100);
+    var tdcCur = s.curBase + commissionActualCur + s.curEquityAnnual;
+
+    var commTargetNew = s.newBase * (s.newCommPct / 100);
+    var commissionActualNew = commTargetNew * (s.newQuota / 100);
+    var tdcNew = s.newBase + commissionActualNew + s.newEquityAnnual;
+
+    var cliffMonths = s.cliffYears * 12;
+    var vestedFraction;
+    if (vestModel === 'cliff') {
+      vestedFraction = s.leaveMonths >= cliffMonths ? 1 : 0;
+    } else {
+      vestedFraction = Math.min(1, s.leaveMonths / cliffMonths);
+    }
+    var vestedAmt = s.unvestedTotal * vestedFraction;
+    var lostEquity = s.unvestedTotal - vestedAmt;
+
+    var delta = tdcNew - tdcCur;
+    var breakevenYears;
+    if (lostEquity <= 0) breakevenYears = 0;
+    else if (delta > 0) breakevenYears = lostEquity / delta;
+    else breakevenYears = Infinity;
+
+    return {
+      commissionActualCur: commissionActualCur, tdcCur: tdcCur,
+      commTargetNew: commTargetNew, commissionActualNew: commissionActualNew, tdcNew: tdcNew,
+      vestedAmt: vestedAmt, lostEquity: lostEquity, vestedFraction: vestedFraction,
+      delta: delta, breakevenYears: breakevenYears, cliffMonths: cliffMonths
+    };
+  }
+
+  /* ---------- Chart.js setup ---------- */
+  var charts = {};
+
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function baseFontColor() { return cssVar('--color-text-muted'); }
+  function gridColor() { return cssVar('--color-divider'); }
+
+  function commonScaleOpts() {
+    return {
+      ticks: { color: baseFontColor(), font: { family: "'Satoshi','Helvetica Neue',sans-serif", size: 11 } },
+      grid: { color: gridColor(), drawTicks: false }
+    };
+  }
+
+  function buildVestChart() {
+    var ctx = document.getElementById('vestChart').getContext('2d');
+    charts.vest = new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [
+        { label: 'Vested', data: [], borderColor: cssVar('--color-success'), backgroundColor: 'transparent', borderWidth: 2.5, tension: 0, stepped: false, pointRadius: 0, fill: false, order: 2 }
+      ]},
+      plugins: [{
+        id: 'exitMarker',
+        afterDatasetsDraw: function (chart) {
+          var mm = chart.markerMonth;
+          if (mm == null) return;
+          var idx = chart.data.labels.indexOf(mm);
+          if (idx === -1) return;
+          var xScale = chart.scales.x, yScale = chart.scales.y;
+          var xPos = xScale.getPixelForValue(idx);
+          var ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([5, 4]);
+          ctx2.lineWidth = 1.8;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-current').trim();
+          ctx2.moveTo(xPos, yScale.top);
+          ctx2.lineTo(xPos, yScale.bottom);
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      }],
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: function (items) { return items[0].label + ' months'; },
+              label: function (item) {
+                if (item.dataset.label === 'Marker') return null;
+                return 'Vested: ' + usd(item.parsed.y);
+              }
+            }
+          }
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Months from today', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usd(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function buildBreakevenChart() {
+    var ctx = document.getElementById('breakevenChart').getContext('2d');
+    charts.breakeven = new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [
+        {
+          label: 'Net advantage of new offer',
+          data: [], borderWidth: 2.5, pointRadius: 0, tension: 0, fill: { target: 'origin' },
+          segment: {
+            borderColor: function (c2) {
+              return (c2.p0.parsed.y < 0 || c2.p1.parsed.y < 0)
+                ? getComputedStyle(document.documentElement).getPropertyValue('--color-error').trim()
+                : getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim();
+            },
+            backgroundColor: function (c2) {
+              var col = (c2.p0.parsed.y < 0 || c2.p1.parsed.y < 0) ? '--color-error' : '--color-success';
+              return 'color-mix(in oklab, ' + getComputedStyle(document.documentElement).getPropertyValue(col).trim() + ' 16%, transparent)';
+            }
+          }
+        }
+      ]},
+      plugins: [{
+        id: 'breakevenMarker',
+        afterDatasetsDraw: function (chart) {
+          var by = chart.breakevenYear;
+          if (by == null || !isFinite(by)) return;
+          var labels = chart.data.labels;
+          var maxLabel = labels[labels.length - 1];
+          if (by > maxLabel) return;
+          var xScale = chart.scales.x, yScale = chart.scales.y;
+          var lo = Math.floor(by), hi = Math.ceil(by);
+          var loIdx = labels.indexOf(lo), hiIdx = labels.indexOf(hi);
+          if (loIdx === -1 || hiIdx === -1) return;
+          var xLo = xScale.getPixelForValue(loIdx), xHi = xScale.getPixelForValue(hiIdx);
+          var frac = hi === lo ? 0 : (by - lo) / (hi - lo);
+          var xPos = xLo + (xHi - xLo) * frac;
+          var zeroY = yScale.getPixelForValue(0);
+          var ctx2 = chart.ctx;
+          ctx2.save();
+          ctx2.beginPath();
+          ctx2.setLineDash([5, 4]);
+          ctx2.lineWidth = 1.8;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-current').trim();
+          ctx2.moveTo(xPos, yScale.top);
+          ctx2.lineTo(xPos, yScale.bottom);
+          ctx2.stroke();
+          ctx2.setLineDash([]);
+          ctx2.lineWidth = 1.5;
+          ctx2.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim();
+          ctx2.beginPath();
+          ctx2.moveTo(xScale.left, zeroY);
+          ctx2.lineTo(xScale.right, zeroY);
+          ctx2.stroke();
+          ctx2.restore();
+        }
+      }],
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: {
+            title: function (items) { return 'Year ' + items[0].label; },
+            label: function (item) { return (item.parsed.y >= 0 ? 'Ahead by ' : 'Behind by ') + usd(Math.abs(item.parsed.y)); }
+          }}
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Years from today', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usdSigned(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function buildQuotaChart() {
+    var ctx = document.getElementById('quotaChart').getContext('2d');
+    charts.quota = new Chart(ctx, {
+      data: { labels: [], datasets: [
+        { type: 'bar', label: 'New offer TDC', data: [], backgroundColor: cssVar('--color-primary'), borderRadius: 5, maxBarThickness: 46 },
+        { type: 'line', label: 'Current TDC (proven)', data: [], borderColor: cssVar('--color-current'), borderWidth: 2.5, borderDash: [6,4], pointRadius: 0, fill: false }
+      ]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function (item) { return item.dataset.label + ': ' + usd(item.parsed.y); } } }
+        },
+        scales: {
+          x: Object.assign({ title: { display: true, text: 'Quota attainment', color: baseFontColor(), font: { size: 11 } } }, commonScaleOpts()),
+          y: Object.assign({ ticks: Object.assign({}, commonScaleOpts().ticks, { callback: function (v) { return usd(v); } }) }, { grid: commonScaleOpts().grid })
+        }
+      }
+    });
+  }
+
+  function refreshChartTheme() {
+    if (!charts.vest) return;
+    [charts.vest, charts.breakeven, charts.quota].forEach(function (c) { c.destroy(); });
+    buildVestChart(); buildBreakevenChart(); buildQuotaChart();
+    render();
+  }
+
+  /* ---------- Render ---------- */
+  function render() {
+    var s = readState();
+    var c = compute(s);
+
+    // live labels next to inputs
+    document.getElementById('valCurBase').textContent = usd(s.curBase);
+    document.getElementById('valCurCommTarget').textContent = usd(s.curCommTarget);
+    document.getElementById('valCurQuota').textContent = s.curQuota + '%';
+    document.getElementById('valCurEquity').textContent = usd(s.curEquityAnnual);
+    document.getElementById('valUnvested').textContent = usd(s.unvestedTotal);
+    document.getElementById('valCliff').textContent = s.cliffYears.toFixed(2).replace(/\.00$/, '.0') + ' yrs';
+    document.getElementById('valNewBase').textContent = usd(s.newBase);
+    document.getElementById('valNewCommPct').textContent = s.newCommPct + '%';
+    document.getElementById('valNewCommTarget').textContent = usd(c.commTargetNew);
+    document.getElementById('valNewEquity').textContent = usd(s.newEquityAnnual);
+    document.getElementById('valNewQuota').textContent = s.newQuota + '%';
+    document.getElementById('valLeaveMonths').textContent = s.leaveMonths + ' mo';
+    document.getElementById('ctxUnvested').textContent = usd(s.unvestedTotal).replace('$', '');
+
+    document.getElementById('curTDCOut').textContent = usd(c.tdcCur);
+    document.getElementById('newTDCOut').textContent = usd(c.tdcNew);
+
+    // KPIs
+    document.getElementById('kpiCurTDC').textContent = usd(c.tdcCur);
+    document.getElementById('kpiNewTDC').textContent = usd(c.tdcNew);
+    document.getElementById('kpiLostEquity').textContent = usd(c.lostEquity);
+    document.getElementById('kpiLostEquitySub').textContent = s.leaveMonths === 0
+      ? 'If you leave today'
+      : 'If you leave in ' + s.leaveMonths + ' months';
+
+    var beCard = document.getElementById('kpiBreakevenCard');
+    var beEl = document.getElementById('kpiBreakeven');
+    beCard.classList.remove('good', 'bad');
+    if (c.lostEquity <= 0) { beEl.textContent = 'Immediate'; beCard.classList.add('good'); }
+    else if (!isFinite(c.breakevenYears)) { beEl.textContent = 'Never'; beCard.classList.add('bad'); }
+    else { beEl.textContent = c.breakevenYears.toFixed(1) + ' yrs'; beCard.classList.add(c.breakevenYears <= 3 ? 'good' : 'bad'); }
+
+    // slider max for leaveMonths tied to cliff
+    var newMax = Math.max(24, Math.round(c.cliffMonths * 1.5));
+    if (parseInt(el.leaveMonths.max, 10) !== newMax) {
+      el.leaveMonths.max = newMax;
+      if (s.leaveMonths > newMax) { el.leaveMonths.value = newMax; s = readState(); c = compute(s); }
+    }
+
+    /* --- Chart 1: vesting curve --- */
+    var maxMonth = Math.max(24, Math.round(c.cliffMonths * 1.5));
+    var vestLabels = [], vestData = [];
+    for (var m = 0; m <= maxMonth; m += 1) {
+      var frac = vestModel === 'cliff' ? (m >= c.cliffMonths ? 1 : 0) : Math.min(1, m / c.cliffMonths);
+      vestLabels.push(m);
+      vestData.push(s.unvestedTotal * frac);
+    }
+    charts.vest.data.labels = vestLabels;
+    charts.vest.data.datasets[0].data = vestData;
+    charts.vest.markerMonth = s.leaveMonths;
+    charts.vest.update();
+
+    var vestCalloutTitle = document.getElementById('vestCalloutTitle');
+    var vestCalloutBody = document.getElementById('vestCalloutBody');
+    vestCalloutTitle.textContent = c.lostEquity > 0
+      ? 'Leaving in ' + s.leaveMonths + ' months forfeits ' + usd(c.lostEquity)
+      : 'Leaving in ' + s.leaveMonths + ' months forfeits nothing';
+    if (c.lostEquity <= 0) {
+      vestCalloutBody.textContent = 'You would have cleared the ' + s.cliffYears + '-year cliff and kept the full unvested pool.';
+    } else if (vestModel === 'cliff') {
+      vestCalloutBody.textContent = 'Under a cliff model, you keep $0 until month ' + Math.round(c.cliffMonths) + ', then the full ' + usd(s.unvestedTotal) + ' vests at once.';
+    } else {
+      vestCalloutBody.textContent = 'Under linear vesting, you have kept ' + usd(c.vestedAmt) + ' (' + Math.round(c.vestedFraction * 100) + '%) and would forfeit the remaining ' + usd(c.lostEquity) + '.';
+    }
+
+    /* --- Chart 2: breakeven timeline --- */
+    var horizonYears = 6;
+    if (isFinite(c.breakevenYears)) horizonYears = Math.min(40, Math.max(6, Math.ceil(c.breakevenYears) + 2));
+    var beLabels = [], netData = [];
+    for (var y = 0; y <= horizonYears; y += 1) {
+      beLabels.push(y);
+      netData.push((c.tdcNew * y - c.lostEquity) - (c.tdcCur * y));
+    }
+    charts.breakeven.data.labels = beLabels;
+    charts.breakeven.data.datasets[0].data = netData;
+    charts.breakeven.breakevenYear = (c.lostEquity > 0 && isFinite(c.breakevenYears)) ? c.breakevenYears : null;
+    charts.breakeven.update();
+
+    var beTitle = document.getElementById('breakevenTitle');
+    var beBody = document.getElementById('breakevenBody');
+    var beCallout = document.getElementById('breakevenCallout');
+    beCallout.classList.remove('good', 'bad', 'warn');
+    if (c.lostEquity <= 0) {
+      beCallout.classList.add('good');
+      beTitle.textContent = 'No equity at risk';
+      beBody.textContent = 'At ' + s.leaveMonths + ' months you\u2019ve already cleared the cliff, so the new offer just needs to beat your current TDC year over year (' + usdSigned(c.delta) + '/yr).';
+    } else if (!isFinite(c.breakevenYears)) {
+      beCallout.classList.add('bad');
+      beTitle.textContent = 'This offer never breaks even';
+      beBody.textContent = 'New offer TDC (' + usd(c.tdcNew) + ') is at or below your current TDC (' + usd(c.tdcCur) + '), so the ' + usd(c.lostEquity) + ' you\u2019d forfeit is never recovered by higher pay alone \u2014 it would need a richer offer or a longer stay before you leave.';
+    } else {
+      beCallout.classList.add(c.breakevenYears <= 2 ? 'good' : 'warn');
+      beTitle.textContent = 'Break-even at year ' + c.breakevenYears.toFixed(1);
+      beBody.textContent = 'The new offer pays ' + usdSigned(c.delta) + '/yr more than your current TDC, which recovers the ' + usd(c.lostEquity) + ' forfeited equity in about ' + c.breakevenYears.toFixed(1) + ' years.';
+    }
+
+    /* --- Chart 3: quota comparison --- */
+    var attainments = [50, 70, 100, 110, 130, 165, 200];
+    var quotaLabels = attainments.map(function (a) { return a + '%'; });
+    var newTDCByAttainment = attainments.map(function (a) {
+      return s.newBase + c.commTargetNew * (a / 100) + s.newEquityAnnual;
+    });
+    var curLine = attainments.map(function () { return c.tdcCur; });
+    charts.quota.data.labels = quotaLabels;
+    charts.quota.data.datasets[0].data = newTDCByAttainment;
+    charts.quota.data.datasets[0].label = 'New offer TDC';
+    charts.quota.data.datasets[1].data = curLine;
+    charts.quota.data.datasets[1].label = 'Current TDC (proven @' + s.curQuota + '%)';
+    // highlight the bar matching the user's current quota color-wise
+    charts.quota.data.datasets[0].backgroundColor = attainments.map(function (a) {
+      return a === s.newQuota ? cssVar('--color-primary-hover') : cssVar('--color-primary');
+    });
+    charts.quota.update();
+
+    document.querySelector('.legend-row + .legend-row') // no-op guard
+  }
+
+  /* ---------- Wire up events ---------- */
+  Object.keys(el).forEach(function (key) {
+    el[key].addEventListener('input', render);
+  });
+
+  /* ---------- Boot ---------- */
+  function boot() {
+    buildVestChart();
+    buildBreakevenChart();
+    buildQuotaChart();
+    render();
+  }
+  if (window.Chart) boot();
+  else window.addEventListener('DOMContentLoaded', function () {
+    var tries = 0;
+    (function wait() {
+      if (window.Chart) return boot();
+      if (tries++ > 100) return;
+      setTimeout(wait, 50);
+    })();
+  });
+})();
+</script>
+</body>
+</html>
